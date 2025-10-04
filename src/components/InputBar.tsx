@@ -1,64 +1,25 @@
-import { IoSend } from "solid-icons/io";
-import { createSignal } from "solid-js";
-import { canBeInput, isEnglish, isHan, isPunctuation } from "../lib/text";
+import type { Letter } from "../lib/text";
+import InputBlocks from "./InputBlocks";
+import UsedLetterGrid from "./UsedLetterGrid";
 
 export default function InputBar(props: {
+	guessed: Pick<Letter, "char" | "guessed">[];
 	handleSend: (word: string) => unknown;
-	guessed: string[];
 }) {
-	let inputEl!: HTMLInputElement;
-	const [letter, setLetter] = createSignal<string | null>(null);
-	function submit() {
-		const currentLetter = letter();
-		if (!currentLetter) return;
-		props.handleSend(currentLetter);
-		setLetter(null);
-		inputEl.value = "";
-	}
-	const isDisabled = () => {
-		const w = letter();
-		return (
-			!w ||
-			props.guessed.includes(w) ||
-			props.guessed.includes(w.toUpperCase()) ||
-			!canBeInput(w)
-		);
-	};
 	return (
-		<div class="flex gap-2">
-			<input
-				type="text"
-				class="h-10 w-10 rounded bg-zinc-400 text-center outline-none focus:border
-			 text-zinc-800 font-bold border-zinc-600 placeholder:text-zinc-600 placeholder:italic placeholder:font-normal"
-				maxLength={1}
-				placeholder="?"
-				ref={inputEl}
-				on:input={(event) => {
-					setLetter(
-						event.currentTarget.value.length > 0
-							? event.currentTarget.value
-							: null,
-					);
-				}}
-				on:keydown={(event) => {
-					if (
-						event.key === "Enter" &&
-						!isDisabled() &&
-						event.currentTarget === document.activeElement
-					) {
-						submit();
-					}
-				}}
-			/>
-			<button
-				type="submit"
-				disabled={isDisabled()}
-				class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer disabled:bg-zinc-500 disabled:cursor-not-allowed
-				h-10 w-10 flex items-center justify-center rounded "
-				on:click={submit}
-			>
-				<IoSend class="text-white" />
-			</button>
-		</div>
+		<>
+			<div class="flex justify-center items-center w-full h-full">
+				<span class="text-zinc-500 italic flex-1">
+					{props.guessed.length}
+				</span>
+				<div class="flex-1">
+					<InputBlocks
+						guessed={props.guessed.map((l) => l.char)}
+						handleSend={props.handleSend}
+					/>
+				</div>
+			</div>
+			{props.guessed.length > 0 && <UsedLetterGrid letters={props.guessed} />}
+		</>
 	);
 }
