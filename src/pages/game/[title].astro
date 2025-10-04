@@ -1,6 +1,5 @@
 ---
 export const prerender = false;
-import { BiRegularShow } from "solid-icons/bi";
 import { DisplayLetter } from "../../components/DisplayLetter";
 import Game from "../../components/Game";
 import MainLayout from "../../layout/MainLayout.astro";
@@ -10,7 +9,7 @@ import { BsLightbulbFill, BsLightbulbOffFill } from "solid-icons/bs";
 import { IoCaretBackCircle } from "solid-icons/io";
 
 const { title } = Astro.params;
-console.log(title);
+const date = Astro.url.searchParams.get("date");
 if (!title) return Astro.redirect("/");
 const finalTitle = decodeFromBase64(title);
 console.log(finalTitle);
@@ -21,6 +20,7 @@ if (!text) return Astro.redirect("/");
 
 <MainLayout subtitle="Game">
 	<div class="flex flex-col items-center gap-4">
+		{date && <h1 class="text-2xl font-bold mt-2">Daily Challenge for {date}</h1>}
 		{text && <Game client:load text={text} />}
 		<div>
 			<div class="m-2">

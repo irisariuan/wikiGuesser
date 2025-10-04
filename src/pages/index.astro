@@ -1,5 +1,6 @@
 ---
 import StartGameButton from "../components/StartGameButton.astro";
+import StartOldGameButton from "../components/StartOldGameButton";
 import MainLayout from "../layout/MainLayout.astro";
 ---
 
@@ -7,13 +8,26 @@ import MainLayout from "../layout/MainLayout.astro";
 	<div class="w-full h-full flex items-center justify-center flex-col">
 		<h1 class="text-4xl font-bold">WikiGuesser</h1>
 		<p class="italic">Can you guess the wiki from a random article?</p>
-		<StartGameButton server:defer>
-			<span>Start Game</span>
-			<span
-				slot="fallback"
-				class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors"
-				>Start Game</span
-			>
-		</StartGameButton>
+		<div class="mt-8 flex flex-col">
+			<div class="flex">
+				<StartGameButton server:defer>
+					<span>Start Game</span>
+					<span
+						slot="fallback"
+						class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors"
+						>Start Game</span
+					>
+				</StartGameButton>
+				<StartGameButton dailyChallenge server:defer>
+					<span>Daily Challenge</span>
+					<span
+						slot="fallback"
+						class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors"
+						>Daily Challenge</span
+					>
+				</StartGameButton>
+			</div>
+			<StartOldGameButton client:visible url={Astro.url} />
+		</div>
 	</div>
 </MainLayout>

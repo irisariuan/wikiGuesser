@@ -1,15 +1,30 @@
 ---
+interface Props {
+	dailyChallenge?: boolean;
+}
+
 import { encodeToBase64 } from "../lib/utils";
 import { getRandomWiki } from "../lib/web";
+import { getTodayDailyChallenge } from "../lib/dailyChallenge";
+const { dailyChallenge = false } = Astro.props;
+let title: string | null;
+let date: string | null = null;
 
-const randomTitle = await getRandomWiki(1);
-const title = randomTitle ? encodeToBase64(randomTitle.title) : null;
+if (dailyChallenge) {
+	const challenge = await getTodayDailyChallenge(Astro.url);
+	title = challenge ? encodeToBase64(challenge.title) : null;
+	date = challenge ? challenge.date : null;
+} else {
+	const randomTitle = await getRandomWiki(1);
+	title = randomTitle ? encodeToBase64(randomTitle.title) : null;
+}
 ---
+
 {
 	title ? (
 		<a
-			href={`/game/${title}`}
-			class="m-2 bg-rose-500 py-2 px-6 rounded-full text-white hover:bg-rose-600 transition-colors"
+			href={`/game/${title}${date ? `?date=${date}` : ""}`}
+			class="m-2 bg-rose-500 py-2 px-6 rounded-full text-white hover:bg-rose-600 transition-colors hover:cursor-pointer"
 		>
 			<slot />
 		</a>

@@ -3,10 +3,11 @@ import { BsLightbulbFill, BsLightbulbOffFill } from "solid-icons/bs";
 import { createEffect, createSignal } from "solid-js";
 import { convertText, markNewGuessedLetters, type Letter } from "../lib/text";
 import type { ExtractedWikiResponseQueryPage } from "../lib/web";
-import EndCard from "./EndCard";
+import PopupCard from "./PopupCard";
 import InputBar from "./InputBar";
 import LetterGrid from "./LetterGrid";
 import UsedLetterGrid from "./UsedLetterGrid";
+import { IoCaretBackCircle } from "solid-icons/io";
 
 export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 	function handleSend(word: string) {
@@ -61,12 +62,28 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 	return (
 		<div class="flex flex-col h-full justify-center overflow-auto">
 			{showEndCard() && (
-				<EndCard
-					guesses={guessed().length}
+				<PopupCard
+					title={
+						<h1 class="font-bold text-3xl text-zinc-600">
+							Congratulations!
+						</h1>
+					}
 					onClose={() => {
 						setShowEndCard(false);
 					}}
-				/>
+				>
+					<p class="text-zinc-500 text-lg">
+						You has guessed the article in {guessed().length}{" "}
+						guesses!
+					</p>
+					<a
+						href="/"
+						class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+					>
+						<IoCaretBackCircle />
+						<span>Go back to main page</span>
+					</a>
+				</PopupCard>
 			)}
 			<div class="m-4 self-end flex gap-2">
 				<button
