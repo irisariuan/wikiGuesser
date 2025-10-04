@@ -16,24 +16,7 @@ if (flags.includes("--dev")) {
 }
 
 app.get("/api/dailyChallenge", async (req, res) => {
-	console.log(
-		`Received request for daily challenge at ${new Date().toISOString()}`,
-	);
-	let fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
-	const url = new URL(fullUrl);
-	if (url.searchParams.has("getAll")) {
-		const challenges = readDailyChallenges();
-		return res.json(challenges);
-	}
-	const today = new Date();
-	const dateString =
-		url.searchParams.get("date") ?? today.toISOString().split("T")[0];
-	const result = await createOrGetDailyChallenge(dateString);
-	if (!result)
-		return res
-			.status(500)
-			.json({ error: "Failed to get or create daily challenge" });
-	return res.json(result);
+	
 });
 
 app.listen(port, () => {

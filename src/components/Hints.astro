@@ -1,0 +1,15 @@
+---
+export const prerender = false
+import AiHints from './AiHints'
+interface Props {
+	title: string
+	text: string
+}
+const { title, text } = Astro.props
+const url = Astro.url
+---
+<div class="m-2">
+	<h1 class="text-2xl font-bold">About hints</h1>
+	<p class="text-zinc-700 italic">Get AI assist on your guesses (Answers may not be accurate)</p>
+	<AiHints client:load title={title} text={text} url={url} />
+</div>

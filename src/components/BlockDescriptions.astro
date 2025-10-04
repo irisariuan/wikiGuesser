@@ -1,0 +1,71 @@
+---
+import { BsLightbulbFill, BsLightbulbOffFill } from "solid-icons/bs";
+import { DisplayLetter } from "./DisplayLetter";
+---
+
+<div class="m-2">
+	<h1 class="text-2xl font-bold">About blocks</h1>
+	<p class="text-zinc-700 italic">Hover or click to see details</p>
+</div>
+<div class="flex flex-wrap gap-2">
+	<div
+		class="flex gap-2 flex-col h-full flex-1 justify-center items-center group"
+	>
+		<DisplayLetter class="bg-zinc-500" />
+		<span class="text-sm">English</span>
+		<DisplayLetter
+			class="text-white bg-zinc-500 invisible group-hover:visible transition-all"
+		>
+			<span>A</span>
+		</DisplayLetter>
+	</div>
+	<div
+		class="flex gap-2 flex-col h-full flex-1 justify-center items-center group"
+	>
+		<DisplayLetter class="bg-zinc-800" />
+		<span class="text-sm">Chinese</span>
+		<DisplayLetter
+			class="text-white bg-zinc-800 invisible group-hover:visible transition-all"
+		>
+			<span>漢</span>
+		</DisplayLetter>
+	</div>
+	<div class="flex gap-2 flex-col h-full flex-1 justify-center items-center">
+		<DisplayLetter class="bg-green-500 text-white">
+			<span>中</span>
+		</DisplayLetter>
+		<span class="text-sm">Correct</span>
+	</div>
+	<div class="flex gap-2 flex-col h-full flex-1 justify-center items-center">
+		<DisplayLetter class="bg-purple-500 text-white">
+			<span>開</span>
+		</DisplayLetter>
+		<span class="text-sm">Answer</span>
+	</div>
+	<div class="flex gap-2 flex-col h-full flex-1 justify-center items-center">
+		<DisplayLetter class="bg-zinc-300 text-black font-bold">
+			<span>。</span>
+		</DisplayLetter>
+		<span class="text-sm">Punctuation</span>
+	</div>
+	<div
+		class="flex gap-2 flex-col h-full flex-1 justify-center items-center group"
+	>
+		<DisplayLetter class="bg-cyan-500 text-white">
+			<span>あ</span>
+		</DisplayLetter>
+		<span class="text-sm">Others</span>
+		<DisplayLetter
+			class="text-white text-base bg-cyan-700 hover:bg-cyan-500 invisible group-hover:visible transition-all group/inside"
+		>
+			<BsLightbulbFill class="group-hover/inside:hidden" />
+			<BsLightbulbOffFill class="hidden group-hover/inside:block" />
+		</DisplayLetter>
+	</div>
+	<div class="flex gap-2 flex-col h-full flex-1 justify-center items-center">
+		<DisplayLetter class="bg-yellow-500 text-white">
+			<span>1</span>
+		</DisplayLetter>
+		<span class="text-sm">Numbers</span>
+	</div>
+</div>
