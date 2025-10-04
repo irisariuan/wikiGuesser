@@ -1,0 +1,21 @@
+---
+import { encodeToBase64 } from "../lib/utils";
+import { getRandomWiki } from "../lib/web";
+
+const randomTitle = await getRandomWiki(1);
+const title = randomTitle ? encodeToBase64(randomTitle.title) : null;
+---
+{
+	title ? (
+		<a
+			href={`/game/${title}`}
+			class="m-2 bg-rose-500 py-2 px-6 rounded-full text-white hover:bg-rose-600 transition-colors"
+		>
+			<slot />
+		</a>
+	) : (
+		<span class="m-2 bg-zinc-500 py-2 px-6 rounded-full text-white transition-colors">
+			<slot />
+		</span>
+	)
+}

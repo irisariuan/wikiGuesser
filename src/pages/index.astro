@@ -1,16 +1,19 @@
 ---
-
+import StartGameButton from "../components/StartGameButton.astro";
+import MainLayout from "../layout/MainLayout.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<MainLayout>
+	<div class="w-full h-full flex items-center justify-center flex-col">
+		<h1 class="text-4xl font-bold">WikiGuesser</h1>
+		<p class="italic">Can you guess the wiki from a random article?</p>
+		<StartGameButton server:defer>
+			<span>Start Game</span>
+			<span
+				slot="fallback"
+				class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors"
+				>Start Game</span
+			>
+		</StartGameButton>
+	</div>
+</MainLayout>
