@@ -1,28 +1,27 @@
 import { IoSend } from "solid-icons/io";
 import { createSignal } from "solid-js";
-import { isEnglish, isHan, isPunctuation } from "../lib/text";
+import { canBeInput, isEnglish, isHan, isPunctuation } from "../lib/text";
 
 export default function InputBar(props: {
 	handleSend: (word: string) => unknown;
 	guessed: string[];
 }) {
 	let inputEl!: HTMLInputElement;
-	const [word, setWord] = createSignal<string | null>(null);
+	const [letter, setLetter] = createSignal<string | null>(null);
 	function submit() {
-		const currentWord = word();
-		if (!currentWord) return;
-		props.handleSend(currentWord);
-		setWord(null);
+		const currentLetter = letter();
+		if (!currentLetter) return;
+		props.handleSend(currentLetter);
+		setLetter(null);
 		inputEl.value = "";
 	}
 	const isDisabled = () => {
-		const w = word();
+		const w = letter();
 		return (
 			!w ||
 			props.guessed.includes(w) ||
 			props.guessed.includes(w.toUpperCase()) ||
-			!(isHan(w) || isEnglish(w)) ||
-			isPunctuation(w)
+			!canBeInput(w)
 		);
 	};
 	return (
@@ -35,7 +34,7 @@ export default function InputBar(props: {
 				placeholder="?"
 				ref={inputEl}
 				on:input={(event) => {
-					setWord(
+					setLetter(
 						event.currentTarget.value.length > 0
 							? event.currentTarget.value
 							: null,

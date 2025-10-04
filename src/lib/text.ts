@@ -4,6 +4,8 @@ export interface Letter {
 	isPunctuation: boolean;
 	isHan: boolean;
 	isEnglish: boolean;
+	isNumber: boolean;
+	shouldInput: boolean;
 	guessed: boolean;
 }
 
@@ -20,6 +22,10 @@ export function isNumber(letter: string) {
 	return /^[0-9]$/.test(letter);
 }
 
+export function canBeInput(letter: string) {
+	return isHan(letter) || isEnglish(letter) || isNumber(letter);
+}
+
 export function convertText(originalText: string, guessed = false): Letter[] {
 	const result: Letter[] = [];
 	for (let i = 0; i < originalText.length; i++) {
@@ -30,6 +36,8 @@ export function convertText(originalText: string, guessed = false): Letter[] {
 			isPunctuation: isPunctuation(letter),
 			isHan: isHan(letter),
 			isEnglish: isEnglish(letter),
+			isNumber: isNumber(letter),
+			shouldInput: canBeInput(letter),
 			guessed,
 		});
 	}

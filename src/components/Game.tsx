@@ -49,8 +49,7 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 
 	createEffect(() => {
 		for (const letter of titleLetters()) {
-			if (!(letter.guessed || !(letter.isEnglish || letter.isHan)))
-				return;
+			if (!letter.guessed && letter.shouldInput) return;
 		}
 		if (!hasShowedEndCard()) {
 			setShowAll(true);
@@ -120,7 +119,7 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 					/>
 				</div>
 			</div>
-				<hr class="border-zinc-700 mb-4 mx-4" />
+			<hr class="border-zinc-700 mb-4 mx-4" />
 			<div class="mx-4">
 				<LetterGrid
 					letters={contentLetters()}
