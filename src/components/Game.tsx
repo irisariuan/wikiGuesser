@@ -60,7 +60,7 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 	});
 
 	return (
-		<div class="flex flex-col h-full justify-center overflow-auto">
+		<div class="flex flex-col h-full max-h-screen overflow-auto">
 			{showEndCard() && (
 				<PopupCard
 					title={
@@ -120,7 +120,7 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 					showOthers={showOthers()}
 				/>
 			</div>
-			<div class="bg-zinc-300/50 p-2 rounded backdrop-blur-3xl mt-4 flex flex-col gap-4 items-center justify-center">
+			<div class="sticky bottom-0 bg-zinc-300/50 p-2 rounded backdrop-blur-3xl mt-4 flex flex-col gap-4 items-center justify-center">
 				<div class="flex justify-center items-center w-full h-full">
 					<span class="text-zinc-500 italic flex-1">
 						{guessed().length}

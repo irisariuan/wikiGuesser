@@ -17,9 +17,9 @@ export async function getTodayDailyChallenge(
 	const { date, title } = data;
 	return { date, title };
 }
-export async function getAllDailyChallenges(baseURL: URL) {
-	const url = new URL("/api/dailyChallenge?getAll=true", baseURL);
-	const res = await fetch(url);
+export async function getAllDailyChallenges(url: URL) {
+	const finalUrl = new URL("/api/dailyChallenge?getAll=true", url);
+	const res = await fetch(finalUrl);
 	if (!res.ok) return [];
 	const data: DailyChallenge[] = await res.json().catch(() => []);
 	return data;

@@ -8,8 +8,8 @@ export default function PopupCard(props: {
 	children?: JSXElement;
 }) {
 	return (
-		<div class="h-full w-full absolute left-0 top-0 bg-zinc-100/50 backdrop-blur-2xl z-10 flex items-center justify-center">
-			<div class="bg-zinc-300 p-8 rounded-3xl h-2/3 w-2/3 flex flex-col drop-shadow-2xl">
+		<div class="h-full w-full absolute left-0 top-0 bg-zinc-100/50 backdrop-blur-2xl z-10 flex items-center justify-center p-2">
+			<div class="bg-zinc-300 p-8 rounded-3xl h-full w-full lg:h-2/3 lg:w-2/3 flex flex-col drop-shadow-2xl">
 				<div class="flex items-center">
 					<div class="flex-1">{props.title}</div>
 					{props.extraTitleElement}

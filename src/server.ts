@@ -19,7 +19,8 @@ app.get("/api/dailyChallenge", async (req, res) => {
 	console.log(
 		`Received request for daily challenge at ${new Date().toISOString()}`,
 	);
-	const url = new URL(req.url);
+	let fullUrl = req.protocol + "://" + req.get("host") + req.originalUrl;
+	const url = new URL(fullUrl);
 	if (url.searchParams.has("getAll")) {
 		const challenges = readDailyChallenges();
 		return res.json(challenges);
