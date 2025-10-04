@@ -34,7 +34,7 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 		}
 	}
 	const [showAll, setShowAll] = createSignal(false);
-	const [showOthers, setShowOthers] = createSignal(true);
+	const [showOthers, setShowOthers] = createSignal(false);
 	const [showEndCard, setShowEndCard] = createSignal(false);
 	const [hasShowedEndCard, setHasShowedEndCard] = createSignal(false);
 	const [titleLetters, setTitleLetters] = createSignal<Letter[]>(
@@ -85,27 +85,31 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 					</a>
 				</PopupCard>
 			)}
-			<div class="m-4 self-end flex gap-2">
-				<button
-					class="h-10 w-10 hover:cursor-pointer bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center text-white text-xl"
-					onClick={() => {
-						setShowAll((prev) => !prev);
-					}}
-				>
-					{showAll() ? <BiRegularShow /> : <BiSolidShow />}
-				</button>
-				<button
-					class={`h-10 w-10 hover:cursor-pointer rounded flex items-center justify-center text-white text-xl ${showOthers() ? "bg-cyan-500 hover:bg-cyan-600" : "bg-cyan-700 hover:bg-cyan-500"}`}
-					onClick={() => {
-						setShowOthers((prev) => !prev);
-					}}
-				>
-					{showOthers() ? (
-						<BsLightbulbOffFill />
-					) : (
-						<BsLightbulbFill />
-					)}
-				</button>
+			<div class="self-end sticky top-0">
+				<div class="bg-zinc-300/50 p-2 m-2 rounded backdrop-blur-3xl flex gap-2">
+					<button
+						class="h-10 w-10 hover:cursor-pointer bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center text-white text-xl"
+						onClick={() => {
+							setShowAll((prev) => !prev);
+						}}
+						title={showAll() ? "Hide All" : "Show All"}
+					>
+						{showAll() ? <BiRegularShow /> : <BiSolidShow />}
+					</button>
+					<button
+						class={`h-10 w-10 hover:cursor-pointer rounded flex items-center justify-center text-white text-xl ${showOthers() ? "bg-cyan-500 hover:bg-cyan-600" : "bg-cyan-700 hover:bg-cyan-500"}`}
+						onClick={() => {
+							setShowOthers((prev) => !prev);
+						}}
+						title={showOthers() ? "Hide Others" : "Show Others"}
+					>
+						{showOthers() ? (
+							<BsLightbulbOffFill />
+						) : (
+							<BsLightbulbFill />
+						)}
+					</button>
+				</div>
 			</div>
 			<div class="mx-4">
 				<LetterGrid
