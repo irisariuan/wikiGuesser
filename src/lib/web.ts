@@ -1,5 +1,6 @@
 import { JSDOM } from "jsdom";
 import { Converter } from "opencc-js";
+import { isEnglish } from "./text";
 
 interface ExtractedWikiResponse<Success extends boolean> {
 	batchcomplete: Success;
@@ -29,7 +30,7 @@ export function removeHtml(html: string, removeEnglish = false) {
 			// remove elements that are lang=en
 			if (
 				(el.getAttribute("lang") === "en" ||
-					/^[a-zA-Z ]+$/.test(el.textContent)) &&
+					isEnglish(el.textContent)) &&
 				!isFirst &&
 				removeEnglish
 			) {
@@ -43,7 +44,7 @@ export function removeHtml(html: string, removeEnglish = false) {
 		isFirst = false;
 	}
 	const textContent = document.body.textContent;
-	return textContent.trim().replaceAll("\n", "").replaceAll(" ", "");
+	return textContent.trim().replaceAll("\n", "").replaceAll(/\s/g, "");
 }
 
 export async function extractDataFromWiki(
