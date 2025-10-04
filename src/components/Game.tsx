@@ -85,46 +85,50 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 					</a>
 				</PopupCard>
 			)}
-			<div class="self-end sticky top-0">
-				<div class="bg-zinc-300/50 p-2 m-2 rounded backdrop-blur-3xl flex gap-2">
-					<button
-						class="h-10 w-10 hover:cursor-pointer bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center text-white text-xl"
-						onClick={() => {
-							setShowAll((prev) => !prev);
-						}}
-						title={showAll() ? "Hide All" : "Show All"}
-					>
-						{showAll() ? <BiRegularShow /> : <BiSolidShow />}
-					</button>
-					<button
-						class={`h-10 w-10 hover:cursor-pointer rounded flex items-center justify-center text-white text-xl ${showOthers() ? "bg-cyan-500 hover:bg-cyan-600" : "bg-cyan-700 hover:bg-cyan-500"}`}
-						onClick={() => {
-							setShowOthers((prev) => !prev);
-						}}
-						title={showOthers() ? "Hide Others" : "Show Others"}
-					>
-						{showOthers() ? (
-							<BsLightbulbOffFill />
-						) : (
-							<BsLightbulbFill />
-						)}
-					</button>
+			<div class="sticky top-0 backdrop-blur-3xl rounded-lg">
+				<div class="flex flex-row-reverse">
+					<div class="bg-zinc-300/80 p-2 m-2 rounded backdrop-blur-3xl flex gap-2">
+						<button
+							class="h-10 w-10 hover:cursor-pointer bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center text-white text-xl"
+							onClick={() => {
+								setShowAll((prev) => !prev);
+							}}
+							title={showAll() ? "Hide All" : "Show All"}
+						>
+							{showAll() ? <BiRegularShow /> : <BiSolidShow />}
+						</button>
+						<button
+							class={`h-10 w-10 hover:cursor-pointer rounded flex items-center justify-center text-white text-xl ${showOthers() ? "bg-cyan-500 hover:bg-cyan-600" : "bg-cyan-700 hover:bg-cyan-500"}`}
+							onClick={() => {
+								setShowOthers((prev) => !prev);
+							}}
+							title={showOthers() ? "Hide Others" : "Show Others"}
+						>
+							{showOthers() ? (
+								<BsLightbulbOffFill />
+							) : (
+								<BsLightbulbFill />
+							)}
+						</button>
+					</div>
+				</div>
+				<div class="p-4 rounded">
+					<LetterGrid
+						letters={titleLetters()}
+						showAll={showAll()}
+						showOthers={showOthers()}
+					/>
 				</div>
 			</div>
+				<hr class="border-zinc-700 mb-4 mx-4" />
 			<div class="mx-4">
-				<LetterGrid
-					letters={titleLetters()}
-					showAll={showAll()}
-					showOthers={showOthers()}
-				/>
-				<hr class="my-4" />
 				<LetterGrid
 					letters={contentLetters()}
 					showAll={showAll()}
 					showOthers={showOthers()}
 				/>
 			</div>
-			<div class="sticky bottom-0 bg-zinc-300/50 p-2 rounded backdrop-blur-3xl mt-4 flex flex-col gap-4 items-center justify-center">
+			<div class="sticky bottom-0 bg-zinc-300/80 p-2 rounded backdrop-blur-3xl mt-4 flex flex-col gap-4 items-center justify-center">
 				<div class="flex justify-center items-center w-full h-full">
 					<span class="text-zinc-500 italic flex-1">
 						{guessed().length}
