@@ -20,7 +20,7 @@ export default function InputBar(props: {
 
 			{props.guessed.length > 0 && (
 				// two lines max height
-				<div class="max-h-22 overflow-auto">
+				<div class="max-h-22 lg:max-h-1/6 overflow-auto">
 					<UsedLetterGrid letters={props.guessed} />
 				</div>
 			)}
