@@ -14,3 +14,7 @@ export function decodeFromBase64(str: string) {
 		return null;
 	}
 }
+export function getDateString() {
+	const today = new Date();
+	return today.toISOString().split("T")[0];
+}

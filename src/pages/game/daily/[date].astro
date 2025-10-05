@@ -1,0 +1,29 @@
+---
+import Game from "../../../components/Game";
+import GameFooter from "../../../components/GameFooter.astro";
+import MainLayout from "../../../layout/MainLayout.astro";
+import { createOrGetDailyChallenge } from "../../../lib/server/dailyChallenge";
+import { encodeToBase64, getDateString } from "../../../lib/utils";
+import { extractDataFromWiki } from "../../../lib/web";
+
+export const prerender = false;
+const { date } = Astro.params;
+const finalDate = date ?? getDateString();
+const challenge = await createOrGetDailyChallenge(finalDate);
+if (!challenge) return Astro.redirect("/");
+const { title: rawTitle } = challenge;
+const encodedTitle = encodeToBase64(rawTitle);
+const content = await extractDataFromWiki(rawTitle);
+if (!content || !encodedTitle) return Astro.redirect("/");
+const { title, extract } = content;
+---
+
+<MainLayout subtitle={"Daily Challenge - ".concat(finalDate)}>
+	<div class="flex flex-col items-center gap-4">
+		<h1 class="text-2xl font-bold mt-2">
+			Daily Challenge for {date}
+		</h1>
+		<Game client:load text={content} encodedTitle={encodedTitle} />
+		<GameFooter title={title} extract={extract} />
+	</div>
+</MainLayout>

@@ -1,0 +1,22 @@
+---
+interface Props {
+	title: string;
+	extract: string;
+}
+import { IoCaretBackCircle } from "solid-icons/io";
+import BlockDescriptions from "./BlockDescriptions.astro";
+import Hints from "./Hints.astro";
+const { title, extract } = Astro.props;
+---
+
+<div>
+	<Hints title={title} text={extract} />
+	<BlockDescriptions />
+	<a
+		href="/"
+		class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+	>
+		<IoCaretBackCircle />
+		<span>Go back to main page</span>
+	</a>
+</div>

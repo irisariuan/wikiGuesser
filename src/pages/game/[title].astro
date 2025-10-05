@@ -1,15 +1,12 @@
 ---
 export const prerender = false;
-import BlockDescriptions from "../../components/BlockDescriptions.astro";
 import Game from "../../components/Game";
-import Hints from "../../components/Hints.astro";
+import GameFooter from "../../components/GameFooter.astro";
 import MainLayout from "../../layout/MainLayout.astro";
 import { decodeFromBase64 } from "../../lib/utils";
 import { extractDataFromWiki } from "../../lib/web";
-import { IoCaretBackCircle } from "solid-icons/io";
 
 const { title } = Astro.params;
-const date = Astro.url.searchParams.get("date");
 if (!title) return Astro.redirect("/");
 const finalTitle = decodeFromBase64(title);
 if (!finalTitle) return Astro.redirect("/");
@@ -19,24 +16,7 @@ if (!text) return Astro.redirect("/");
 
 <MainLayout subtitle="Game">
 	<div class="flex flex-col items-center gap-4">
-		{
-			date && (
-				<h1 class="text-2xl font-bold mt-2">
-					Daily Challenge for {date}
-				</h1>
-			)
-		}
 		{text && <Game client:load text={text} encodedTitle={title} />}
-		<div>
-			<Hints title={text.title} text={text.extract} />
-			<BlockDescriptions />
-			<a
-				href="/"
-				class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
-			>
-				<IoCaretBackCircle />
-				<span>Go back to main page</span>
-			</a>
-		</div>
+		<GameFooter title={text.title} extract={text.extract} />
 	</div>
 </MainLayout>
