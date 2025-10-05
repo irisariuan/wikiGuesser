@@ -1,4 +1,11 @@
-import { createResource, createSignal, For, Show } from "solid-js";
+import {
+	createResource,
+	createSignal,
+	For,
+	Match,
+	Show,
+	Switch,
+} from "solid-js";
 import PopupCard from "./PopupCard";
 import { getAllDailyChallenges } from "../lib/dailyChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
@@ -41,11 +48,21 @@ export default function PastChallenges(props: { url: URL }) {
 								</div>
 							)}
 						</For>
-						{challenges()?.length === 0 && (
-							<p class="text-zinc-500 text-lg">
-								No past challenges found.
-							</p>
-						)}
+						<Switch>
+							<Match when={challenges.loading}>
+								<p class="text-zinc-500 text-lg">Loading...</p>
+							</Match>
+							<Match when={challenges.error}>
+								<p class="text-zinc-500 text-lg">
+									Failed to load past challenges.
+								</p>
+							</Match>
+							<Match when={challenges()?.length === 0}>
+								<p class="text-zinc-500 text-lg">
+									No past challenges found.
+								</p>
+							</Match>
+						</Switch>
 					</div>
 				</PopupCard>
 			</Show>
