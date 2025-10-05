@@ -42,7 +42,9 @@ export default function InputBlocks(props: {
 				}}
 				on:keydown={(event) => {
 					if (
-						event.key === "Enter" &&
+						(event.key === "Enter" ||
+							event.key === " " ||
+							event.key === "Tab") &&
 						!isDisabled() &&
 						event.currentTarget === document.activeElement
 					) {
