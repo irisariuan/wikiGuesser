@@ -49,17 +49,19 @@ import { DisplayLetter } from "./DisplayLetter";
 		<span class="text-sm">Punctuation</span>
 	</div>
 	<div
-		class="flex gap-2 flex-col h-full flex-1 justify-center items-center group"
+		class="flex gap-2 flex-col-reverse h-full flex-1 justify-center items-center group"
 	>
-		<DisplayLetter class="bg-cyan-500 text-white">
-			<span>あ</span>
-		</DisplayLetter>
-		<span class="text-sm">Others</span>
 		<DisplayLetter
-			class="text-white text-base bg-cyan-700 hover:bg-cyan-500 invisible group-hover:visible transition-all group/inside"
+			class="text-white text-base bg-cyan-700 hover:bg-cyan-500 invisible group-hover:visible transition-all group/inside peer"
 		>
 			<BsLightbulbFill class="group-hover/inside:hidden" />
 			<BsLightbulbOffFill class="hidden group-hover/inside:block" />
+		</DisplayLetter>
+		<span class="text-sm">Others</span>
+		<DisplayLetter
+			class="bg-cyan-500 text-white peer-hover:*:invisible peer-hover:bg-cyan-700 transition-all"
+		>
+			<span>あ</span>
 		</DisplayLetter>
 	</div>
 	<div class="flex gap-2 flex-col h-full flex-1 justify-center items-center">
