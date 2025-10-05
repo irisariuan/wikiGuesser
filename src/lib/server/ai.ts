@@ -1,6 +1,6 @@
-export const AI_BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
-export const AI_KEY = process.env.OPENROUTER_KEY;
-export const AI_MODEL = process.env.MODEL;
+import { AI_MODEL, AI_KEY } from "astro:env/server";
+const models = AI_MODEL.split(",").map((v) => v.trim());
+
 export const prompt = {
 	role: "system",
 	content:
@@ -15,18 +15,16 @@ export async function getAIGuessHints(
 	forceFetch = true,
 	noCache = false,
 ): Promise<string[] | null> {
-	const cacheKey = title;
-	if (!noCache && hintCache.has(cacheKey)) {
-		return hintCache.get(cacheKey) ?? null;
+	if (!noCache && hintCache.has(title)) {
+		return hintCache.get(title) ?? null;
 	}
 	if (!forceFetch) return null;
 	const hints = await generateAIGuessPrompt(title, extract).catch(() => null);
-	if (hints) hintCache.set(cacheKey, hints);
+	if (hints) hintCache.set(title, hints);
 	return hints;
 }
 
 export async function generateAIGuessPrompt(title: string, extract: string) {
-	if (!AI_BASE_URL || !AI_MODEL || !AI_KEY) return null;
 	const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
 		method: "POST",
 		headers: {
@@ -34,7 +32,8 @@ export async function generateAIGuessPrompt(title: string, extract: string) {
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({
-			model: process.env.MODEL,
+			model: models[0],
+			models: models.slice(1),
 			messages: [
 				prompt,
 				{
@@ -44,7 +43,10 @@ export async function generateAIGuessPrompt(title: string, extract: string) {
 			],
 		}),
 	});
-	if (!res.ok) return null;
+	if (!res.ok) {
+		console.error("AI request failed", await res.text());
+		return null;
+	}
 	const data = await res.json();
 	const aiMessage = data.choices[0].message;
 	return (aiMessage.content as string)

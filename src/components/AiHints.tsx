@@ -5,6 +5,7 @@ import {
 	For,
 	Match,
 	Show,
+	Suspense,
 	Switch,
 } from "solid-js";
 import { getAIGuessHints } from "../lib/ai";
@@ -31,7 +32,7 @@ export default function AiHints(props: {
 		return result;
 	});
 	createEffect(() => {
-		if (loadHints()) {
+		if (!hints() && loadHints()) {
 			refetch();
 		}
 		if (hints() && !loadHints()) {
@@ -49,26 +50,28 @@ export default function AiHints(props: {
 					Generate
 				</button>
 			</Show>
-			<Switch>
-				<Match when={hints()}>
-					<For each={hints()}>
-						{(hint) => <HintBlock hint={hint} />}
-					</For>
-				</Match>
-				<Match when={loadHints() && hints.loading}>
-					<HintBlock />
-					<HintBlock />
-					<HintBlock />
-				</Match>
-				<Match when={loadHints() && hints()?.length === 0}>
-					<p class="text-zinc-500 italic">No hints available.</p>
-				</Match>
-				<Match when={loadHints() && hints.error}>
-					<p class="text-red-500 italic">
-						Failed to load hints. Please try again later.
-					</p>
-				</Match>
-			</Switch>
+			<Suspense
+				fallback={
+					<>
+						<HintBlock />
+						<HintBlock />
+						<HintBlock />
+					</>
+				}
+			>
+				<Switch>
+					<Match when={hints.error}>
+						<p class="text-red-500 italic">
+							Failed to load hints. Please try again later.
+						</p>
+					</Match>
+					<Match when={hints()}>
+						<For each={hints()}>
+							{(hint) => <HintBlock hint={hint} />}
+						</For>
+					</Match>
+				</Switch>
+			</Suspense>
 		</>
 	);
 }

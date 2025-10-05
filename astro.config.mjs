@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig, envField } from "astro/config";
 
 import tailwindcss from "@tailwindcss/vite";
 
@@ -18,4 +18,17 @@ export default defineConfig({
 	}),
 
 	integrations: [solidJs()],
+	env: {
+		schema: {
+			AI_KEY: envField.string({
+				context: "server",
+				access: "secret",
+			}),
+			AI_MODEL: envField.string({
+				context: "server",
+				access: "public",
+				default: "gpt-4o",
+			}),
+		},
+	},
 });

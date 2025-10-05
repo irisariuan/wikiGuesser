@@ -16,6 +16,7 @@ export const POST: APIRoute = async ({ request }) => {
 	const { title, extract } = parsed.data;
 	const hints = await getAIGuessHints(title, extract);
 	if (!hints) {
+		console.log("AI hints generation failed");
 		return new Response("Could not get hints", { status: 500 });
 	}
 	return new Response(JSON.stringify(hints), {
