@@ -1,3 +1,4 @@
+import { Show } from "solid-js";
 import type { Letter } from "../lib/text";
 import InputBlocks from "./InputBlocks";
 import UsedLetterGrid from "./UsedLetterGrid";
@@ -17,13 +18,11 @@ export default function InputBar(props: {
 				</div>
 				<span class="text-zinc-500 italic">{props.guessed.length}</span>
 			</div>
-
-			{props.guessed.length > 0 && (
-				// two lines max height
-				<div class="max-h-22 lg:max-h-1/6 overflow-auto">
+			<Show when={props.guessed.length > 0}>
+				<div class="max-h-1/8 lg:max-h-1/6 overflow-auto">
 					<UsedLetterGrid letters={props.guessed} />
 				</div>
-			)}
+			</Show>
 		</>
 	);
 }

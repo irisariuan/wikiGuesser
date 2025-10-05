@@ -1,4 +1,4 @@
-import { createResource, createSignal, For } from "solid-js";
+import { createResource, createSignal, For, Show } from "solid-js";
 import PopupCard from "./PopupCard";
 import { getAllDailyChallenges } from "../lib/dailyChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
@@ -11,7 +11,7 @@ export default function PastChallenges(props: { url: URL }) {
 	});
 	return (
 		<>
-			{openPopup() && (
+			<Show when={openPopup()}>
 				<PopupCard
 					title={
 						<h1 class="font-bold text-3xl text-zinc-600 flex-1">
@@ -48,7 +48,7 @@ export default function PastChallenges(props: { url: URL }) {
 						)}
 					</div>
 				</PopupCard>
-			)}
+			</Show>
 			<button
 				on:click={() => setPopup(true)}
 				class="m-2 bg-yellow-500 py-2 px-6 rounded-full hover:bg-yellow-600 text-white transition-colors hover:cursor-pointer"

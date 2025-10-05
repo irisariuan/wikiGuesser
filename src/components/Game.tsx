@@ -1,5 +1,5 @@
 import { IoCaretBackCircle } from "solid-icons/io";
-import { createEffect, createSignal } from "solid-js";
+import { createEffect, createSignal, Show } from "solid-js";
 import { convertText, markNewGuessedLetters, type Letter } from "../lib/text";
 import type { ExtractedWikiResponseQueryPage } from "../lib/web";
 import InputBar from "./InputBar";
@@ -7,7 +7,10 @@ import LetterGrid from "./LetterGrid";
 import PopupCard from "./PopupCard";
 import ToggleViews from "./ToggleViews";
 
-export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
+export default function Game(props: {
+	text: ExtractedWikiResponseQueryPage;
+	encodedTitle: string;
+}) {
 	function handleSend(word: string) {
 		{
 			setTitleLetters((prev) => markNewGuessedLetters(prev, word));
@@ -58,10 +61,10 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 			setHasShowedEndCard(true);
 		}
 	});
-
+	
 	return (
 		<div class="flex flex-col h-full max-h-screen overflow-auto">
-			{showEndCard() && (
+			<Show when={showEndCard()}>
 				<PopupCard
 					title={
 						<h1 class="font-bold text-3xl text-zinc-600">
@@ -84,7 +87,8 @@ export default function Game(props: { text: ExtractedWikiResponseQueryPage }) {
 						<span>Go back to main page</span>
 					</a>
 				</PopupCard>
-			)}
+			</Show>
+
 			<div class="sticky top-0 backdrop-blur-3xl rounded-lg">
 				<div class="flex flex-row-reverse">
 					<ToggleViews

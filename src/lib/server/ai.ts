@@ -12,11 +12,14 @@ const hintCache = new Map<string, string[] | null>();
 export async function getAIGuessHints(
 	title: string,
 	extract: string,
+	forceFetch = true,
+	noCache = false,
 ): Promise<string[] | null> {
 	const cacheKey = title;
-	if (hintCache.has(cacheKey)) {
-		return hintCache.get(cacheKey) || null;
+	if (!noCache && hintCache.has(cacheKey)) {
+		return hintCache.get(cacheKey) ?? null;
 	}
+	if (!forceFetch) return null;
 	const hints = await generateAIGuessPrompt(title, extract).catch(() => null);
 	if (hints) hintCache.set(cacheKey, hints);
 	return hints;

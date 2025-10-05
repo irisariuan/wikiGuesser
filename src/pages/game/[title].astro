@@ -26,7 +26,7 @@ if (!text) return Astro.redirect("/");
 				</h1>
 			)
 		}
-		{text && <Game client:load text={text} />}
+		{text && <Game client:load text={text} encodedTitle={title} />}
 		<div>
 			<Hints title={text.title} text={text.extract} />
 			<BlockDescriptions />
