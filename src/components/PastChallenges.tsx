@@ -36,7 +36,14 @@ export default function PastChallenges(props: { url: URL }) {
 					}
 				>
 					<div class="flex flex-col my-4 gap-2 overflow-y-auto">
-						<For each={challenges()}>
+						<For
+							each={challenges()}
+							fallback={
+								<p class="text-zinc-500 text-lg">
+									No past challenges found.
+								</p>
+							}
+						>
 							{(challenge) => (
 								<div class="p-1 flex items-center gap-2 hover:underline text-zinc-500 text-lg hover:cursor-pointer hover:bg-zinc-500 hover:text-white rounded-xl">
 									<IoCaretForwardCircle />
@@ -55,11 +62,6 @@ export default function PastChallenges(props: { url: URL }) {
 							<Match when={challenges.error}>
 								<p class="text-zinc-500 text-lg">
 									Failed to load past challenges.
-								</p>
-							</Match>
-							<Match when={challenges()?.length === 0}>
-								<p class="text-zinc-500 text-lg">
-									No past challenges found.
 								</p>
 							</Match>
 						</Switch>
