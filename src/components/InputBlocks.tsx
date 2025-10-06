@@ -48,6 +48,7 @@ export default function InputBlocks(props: {
 						!isDisabled() &&
 						event.currentTarget === document.activeElement
 					) {
+						event.preventDefault()
 						submit();
 					}
 				}}
