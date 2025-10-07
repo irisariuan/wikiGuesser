@@ -7,7 +7,7 @@ export const prompt = {
 		"You are a helpful assistant that helps people guess the title of a Wikipedia article based on its extract. You will only respond with three hints that can help guessing for the title of the article. Do not include any additional information or punctuation. The hints should be in Traditional Chinese and separated by lines. The hints should not be too obvious, and should not directly reveal the title. For example, if the title is '愛因斯坦', you might say '相對論\n物理學家\n德國'. If the title is '萬里長城', you might say '古代建築\n防禦工事\n中國'.",
 };
 
-const hintCache = new Map<string, string[] | null>();
+const hintCache = new Map<string, string[]>();
 
 export async function getAIGuessHints(
 	title: string,

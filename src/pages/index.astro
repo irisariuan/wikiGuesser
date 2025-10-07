@@ -1,4 +1,6 @@
 ---
+import { Picture } from "astro:assets";
+import webIcon from "../assets/webIcon.png";
 import PastChallenge from "../components/PastChallenge.astro";
 import StartGameButton from "../components/StartGameButton.astro";
 import MainLayout from "../layout/MainLayout.astro";
@@ -6,6 +8,13 @@ import MainLayout from "../layout/MainLayout.astro";
 
 <MainLayout>
 	<div class="w-full h-full flex items-center justify-center flex-col">
+		<Picture
+			src={webIcon}
+			formats={["avif", "webp"]}
+			alt="Icon of WikiGuesser"
+			class="w-24 h-24 mb-4 object-center"
+			}
+		/>
 		<h1 class="text-4xl font-bold">WikiGuesser</h1>
 		<p class="italic">Can you guess the wiki from a random article?</p>
 		<div class="mt-8 flex flex-col">
