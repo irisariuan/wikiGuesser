@@ -1,11 +1,10 @@
 import { IoCaretBackCircle } from "solid-icons/io";
-import { createEffect, createSignal, Show } from "solid-js";
+import { createEffect, createSignal, onMount, Show } from "solid-js";
 import { convertText, markNewGuessedLetters, type Letter } from "../lib/text";
 import type { ExtractedWikiResponseQueryPage } from "../lib/web";
 import InputBar from "./InputBar";
 import LetterGrid from "./LetterGrid";
 import PopupCard from "./PopupCard";
-import ToggleViews from "./ToggleViews";
 
 export default function Game(props: {
 	text: ExtractedWikiResponseQueryPage;
@@ -61,9 +60,26 @@ export default function Game(props: {
 			setHasShowedEndCard(true);
 		}
 	});
-	
+
+	onMount(() => {
+		const letters = window.localStorage.getItem(props.encodedTitle);
+		if (!letters) return;
+		const guessedLetters = JSON.parse(letters) as string[];
+		for (const letter of guessedLetters) {
+			handleSend(letter);
+		}
+	});
+
+	createEffect(() => {
+		const letters = guessed().map((l) => l.char);
+		window.localStorage.setItem(
+			props.encodedTitle,
+			JSON.stringify(letters),
+		);
+	});
+
 	return (
-		<div class="flex flex-col h-full max-h-screen overflow-auto">
+		<div class="h-full max-h-screen overflow-auto">
 			<Show when={showEndCard()}>
 				<PopupCard
 					title={
@@ -88,21 +104,12 @@ export default function Game(props: {
 					</a>
 				</PopupCard>
 			</Show>
-
-			<div class="sticky top-0 backdrop-blur-3xl rounded-lg">
-				<div class="flex flex-row-reverse">
-					<ToggleViews
-						showAllSignal={showAllSignal}
-						showOthersSignal={showOthersSignal}
-					/>
-				</div>
-				<div class="p-4 rounded">
-					<LetterGrid
-						letters={titleLetters()}
-						showAll={showAll()}
-						showOthers={showOthers()}
-					/>
-				</div>
+			<div class="sticky top-0 backdrop-blur-3xl rounded-lg p-2 m-2">
+				<LetterGrid
+					letters={titleLetters()}
+					showAll={showAll()}
+					showOthers={showOthers()}
+				/>
 			</div>
 			<hr class="border-zinc-700 mb-4 mx-4" />
 			<div class="mx-4">
@@ -112,8 +119,14 @@ export default function Game(props: {
 					showOthers={showOthers()}
 				/>
 			</div>
-			<div class="sticky bottom-0 bg-zinc-300/80 p-2 rounded backdrop-blur-3xl mt-4 flex flex-col gap-4 items-center justify-center">
-				<InputBar guessed={guessed()} handleSend={handleSend} />
+			<div class="sticky bottom-0 bg-zinc-300/80 m-2 p-2 rounded backdrop-blur-3xl mt-4 flex flex-col gap-4 items-center justify-center">
+				<InputBar
+					guessed={guessed()}
+					handleSend={handleSend}
+					showAllSignal={showAllSignal}
+					showOthersSignal={showOthersSignal}
+					totalLength={contentLetters().length}
+				/>
 			</div>
 		</div>
 	);

@@ -6,8 +6,8 @@ export default function UsedLetterGrid(props: {
 	letters: Pick<Letter, "guessed" | "char">[];
 }) {
 	return (
-		<div class="grid grid-cols-6 md:grid-cols-12 lg:grid-cols-24 gap-1 w-full h-full">
-			<For each={props.letters}>
+		<div class="flex flex-wrap gap-2 w-full max-h-34 overflow-auto">
+			<For each={props.letters.toReversed()}>
 				{(letter) => {
 					return (
 						<DisplayLetter

@@ -11,7 +11,7 @@ export default function LetterGrid(props: {
 	const sortedLetters = () =>
 		props.letters.toSorted((a, b) => a.index - b.index);
 	return (
-		<div class="grid grid-cols-6 md:grid-cols-12 lg:grid-cols-22 xl:grid-cols-28 gap-1">
+		<div class="flex flex-wrap gap-1 w-fit">
 			<For each={sortedLetters()}>
 				{(letter) => (
 					<LetterBlock

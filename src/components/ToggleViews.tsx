@@ -11,7 +11,7 @@ export default function ToggleViews(props: {
 	const showOthers = () => props.showOthersSignal[0]();
 	const setShowOthers = () => props.showOthersSignal[1];
 	return (
-		<div class="bg-zinc-300/80 p-2 m-2 rounded backdrop-blur-3xl flex gap-2">
+		<div class="flex gap-2">
 			<button
 				class="h-10 w-10 hover:cursor-pointer bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center text-white text-xl"
 				onClick={() => {

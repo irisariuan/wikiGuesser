@@ -28,6 +28,7 @@ export default function InputBlocks(props: {
 		<div class="flex gap-2">
 			<input
 				type="text"
+				autocomplete="off"
 				class="h-10 w-10 rounded bg-zinc-400 text-center outline-none focus:border
 			 text-zinc-800 font-bold border-zinc-600 placeholder:text-zinc-600 placeholder:italic placeholder:font-normal"
 				maxLength={1}
@@ -45,11 +46,10 @@ export default function InputBlocks(props: {
 						(event.key === "Enter" ||
 							event.key === " " ||
 							event.key === "Tab") &&
-						!isDisabled() &&
 						event.currentTarget === document.activeElement
 					) {
-						event.preventDefault()
-						submit();
+						event.preventDefault();
+						if (!isDisabled()) submit();
 					}
 				}}
 			/>
