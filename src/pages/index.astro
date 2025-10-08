@@ -1,11 +1,11 @@
 ---
 import { Picture } from "astro:assets";
 import webIcon from "../assets/webIcon.png";
-import AllChallengesSelector from "../components/AllChallengesSelector";
-import DailyChallengesSelector from "../components/DailyChallengesSelector";
 import IdInput from "../components/IdInput.astro";
 import StartGameButton from "../components/StartGameButton.astro";
 import MainLayout from "../layout/MainLayout.astro";
+import Selectors from "../components/Selectors.astro";
+import PlaceholderSelectors from "../components/PlaceholderSelectors.astro";
 ---
 
 <MainLayout>
@@ -37,8 +37,9 @@ import MainLayout from "../layout/MainLayout.astro";
 					>
 				</StartGameButton>
 			</div>
-			<DailyChallengesSelector url={Astro.url} client:load />
-			<AllChallengesSelector url={Astro.url} client:load />
+			<Selectors server:defer>
+				<PlaceholderSelectors slot="fallback" />
+			</Selectors>
 			<IdInput />
 		</div>
 	</div>

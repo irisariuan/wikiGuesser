@@ -1,0 +1,10 @@
+---
+export const prerender = false;
+import AllChallengesSelector from "./AllChallengesSelector";
+import DailyChallengesSelector from "./DailyChallengesSelector";
+
+const url = Astro.url;
+---
+
+<DailyChallengesSelector url={url} client:load />
+<AllChallengesSelector url={url} client:load />
