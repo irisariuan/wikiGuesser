@@ -1,20 +1,21 @@
 ---
+export const prerender = false;
+
 import Game from "../../../components/Game";
 import GameFooter from "../../../components/GameFooter.astro";
 import MainLayout from "../../../layout/MainLayout.astro";
-import { createOrGetDailyChallenge } from "../../../lib/server/dailyChallenge";
+import { createOrGetDailyChallenge } from "../../../lib/server/challenge";
 import { encodeToBase64, getDateString } from "../../../lib/utils";
 import { extractDataFromWiki } from "../../../lib/web";
 
-export const prerender = false;
 const { date } = Astro.params;
 const finalDate = date ?? getDateString();
 const challenge = await createOrGetDailyChallenge(finalDate);
-if (!challenge) return Astro.redirect("/");
+if (!challenge) return Astro.rewrite("/404.html");
 const { title: rawTitle } = challenge;
 const encodedTitle = encodeToBase64(rawTitle);
 const content = await extractDataFromWiki(rawTitle);
-if (!content || !encodedTitle) return Astro.redirect("/");
+if (!content || !encodedTitle) return Astro.rewrite("/500.html");
 const { title, extract } = content;
 ---
 
@@ -23,7 +24,12 @@ const { title, extract } = content;
 		<h1 class="text-2xl font-bold mt-2">
 			Daily Challenge for {date}
 		</h1>
-		<Game client:load text={content} encodedTitle={encodedTitle} />
+		<Game
+			client:load
+			text={content}
+			encodedTitle={encodedTitle}
+			id={challenge.id}
+		/>
 		<GameFooter title={title} extract={extract} />
 	</div>
 </MainLayout>

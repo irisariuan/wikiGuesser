@@ -8,6 +8,7 @@ import LetterGrid from "./LetterGrid";
 export default function Game(props: {
 	text: ExtractedWikiResponseQueryPage;
 	encodedTitle: string;
+	id: number | null;
 }) {
 	function handleSend(word: string) {
 		{
@@ -84,6 +85,11 @@ export default function Game(props: {
 					guessedLength={guessed().length}
 					setShowEndCard={setShowEndCard}
 				/>
+			</Show>
+			<Show when={props.id !== null}>
+				<h1 class="text-4xl font-bold m-2">
+					#{props.id?.toString().padStart(4, "0")}
+				</h1>
 			</Show>
 			<div class="sticky top-0 backdrop-blur-3xl rounded-lg p-2 m-2">
 				<LetterGrid

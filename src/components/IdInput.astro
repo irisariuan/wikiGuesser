@@ -1,0 +1,63 @@
+---
+import { IoSend } from "solid-icons/io";
+---
+
+<script>
+	window.onload = () => {
+		const input = document.querySelector(
+			"input#challengeIdInput",
+		) as HTMLInputElement;
+		const submitButton = document.querySelector(
+			"button#submitChallengeId",
+		) as HTMLButtonElement;
+
+		function handleInput() {
+			if (input && input.value) {
+				const id = Number(input.value);
+				if (!isNaN(id) && id > 0) {
+					window.location.href = `/game/id/${id}`;
+					input.disabled = true;
+					if (submitButton) submitButton.disabled = true;
+				} else {
+					input.value = "";
+				}
+			}
+		}
+		if (submitButton) {
+			submitButton.onclick = (e) => {
+				e.preventDefault();
+				handleInput();
+			};
+		}
+		document.addEventListener("keydown", (e) => {
+			if (e.key === "Enter") {
+				handleInput();
+			}
+		});
+	};
+</script>
+<div class="flex items-center">
+	<div
+		class="bg-zinc-200 p-2 rounded-full focus-within:outline outline-zinc-700 m-2 flex-1 flex flex-row-reverse items-center gap-1 has-invalid:outline-rose-500 peer"
+	>
+		<input
+			id="challengeIdInput"
+			type="number"
+			class="outline-none flex-1 text-zinc-700 font-bold appearance-none disabled:cursor-not-allowed invalid:font-extralight invalid:text-rose-500 peer"
+			placeholder="Enter Challenge ID"
+		/>
+		<span
+			class="text-zinc-400 peer-invalid:text-rose-500 peer-invalid:font-bold"
+			>#</span
+		>
+	</div>
+	<button>
+		<button
+			id="submitChallengeId"
+			type="submit"
+			class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer h-10 w-10 flex items-center justify-center rounded-full disabled:bg-zinc-500 disabled:cursor-not-allowed"
+		>
+			<IoSend class="text-white" />
+		</button>
+	</button>
+</div>

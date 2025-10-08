@@ -5,18 +5,20 @@ import GameFooter from "../../components/GameFooter.astro";
 import MainLayout from "../../layout/MainLayout.astro";
 import { decodeFromBase64 } from "../../lib/utils";
 import { extractDataFromWiki } from "../../lib/web";
+import { getOrCreateChallengeAndReturnId } from "../../lib/server/challenge";
 
 const { title } = Astro.params;
 if (!title) return Astro.redirect("/");
 const finalTitle = decodeFromBase64(title);
-if (!finalTitle) return Astro.redirect("/");
+if (!finalTitle) return Astro.rewrite("/500.html");
 const text = await extractDataFromWiki(finalTitle);
-if (!text) return Astro.redirect("/");
+const id = await getOrCreateChallengeAndReturnId(finalTitle);
+if (!text) return Astro.rewrite("/500.html");
 ---
 
 <MainLayout subtitle="Game">
 	<div class="flex flex-col items-center gap-4">
-		{text && <Game client:load text={text} encodedTitle={title} />}
+		{text && <Game client:load text={text} encodedTitle={title} id={id} />}
 		<GameFooter title={text.title} extract={text.extract} />
 	</div>
 </MainLayout>

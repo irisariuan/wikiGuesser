@@ -3,7 +3,7 @@ import { handler as ssrHandler } from "../dist/server/entry.mjs";
 import {
 	createOrGetDailyChallenge,
 	readDailyChallenges,
-} from "./lib/server/dailyChallenge";
+} from "./lib/server/challenge";
 const app = express();
 const port = 6543;
 

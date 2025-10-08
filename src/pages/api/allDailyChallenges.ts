@@ -1,6 +1,6 @@
 export const prerender = false;
 import type { APIRoute } from "astro";
-import { readDailyChallenges } from "../../lib/server/dailyChallenge";
+import { readDailyChallenges } from "../../lib/server/challenge";
 
 export const GET: APIRoute = async () => {
 	const challenges = await readDailyChallenges();

@@ -4,7 +4,7 @@ interface Props {
 	dailyChallenge?: boolean;
 }
 import { getDateString } from "../lib/utils";
-import { createOrGetDailyChallenge } from "../lib/server/dailyChallenge";
+import { createOrGetDailyChallenge } from "../lib/server/challenge";
 const { dailyChallenge = false } = Astro.props;
 let date: string | null = null;
 

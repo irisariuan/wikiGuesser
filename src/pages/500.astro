@@ -1,0 +1,35 @@
+---
+interface Props {
+  error: unknown;
+}
+
+import { IoCaretBackCircle } from "solid-icons/io";
+import MainLayout from "../layout/MainLayout.astro";
+import webIcon from "../assets/webIcon.png";
+import { Picture } from "astro:assets";
+
+const { error } = Astro.props;
+---
+
+<MainLayout subtitle="Server Error">
+	<div class="h-full w-full flex items-center justify-center flex-col">
+		<Picture
+			src={webIcon}
+			formats={["avif", "webp"]}
+			alt="Icon of WikiGuesser"
+			class="w-24 h-24 mb-4 object-center"
+		/>
+		<h1 class="text-4xl font-bold">Server Error</h1>
+		<p class="italic">
+			Sorry, internal server error occurred. Please try again later.
+		</p>
+		<p class="text-rose-200 bg-rose-500 p-2 rounded-xl">{error instanceof Error ? error.message : "Unknown error"}</p>
+		<a
+			href="/"
+			class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+		>
+			<IoCaretBackCircle />
+			<span>Go back to main page</span>
+		</a>
+	</div>
+</MainLayout>
