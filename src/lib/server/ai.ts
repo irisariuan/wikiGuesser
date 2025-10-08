@@ -55,6 +55,7 @@ export async function getAIGuessHints(
 	const generatedHints = await generateAIGuessPrompt(title, extract).catch(
 		() => null,
 	);
+	if (generatedHints) await saveHints(title, generatedHints);
 	return generatedHints;
 }
 
