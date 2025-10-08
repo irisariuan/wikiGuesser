@@ -9,12 +9,12 @@ import { extractDataFromWiki } from "../../../lib/web";
 const { id } = Astro.params;
 if (!id) return Astro.redirect("/");
 const parsedId = Number(id);
-if (isNaN(parsedId)) return Astro.rewrite("/404.html");
+if (isNaN(parsedId)) return Astro.redirect("/notFound");
 const challenge = await getChallengeById(parsedId);
-if (!challenge) return Astro.rewrite("/404.html");
+if (!challenge) return Astro.redirect("/notFound");
 const { title } = challenge;
 const text = await extractDataFromWiki(title);
-if (!text) return Astro.rewrite("/500.html");
+if (!text) return Astro.redirect("/internalError");
 ---
 
 <MainLayout subtitle="Game">

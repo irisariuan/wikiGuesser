@@ -11,11 +11,11 @@ import { extractDataFromWiki } from "../../../lib/web";
 const { date } = Astro.params;
 const finalDate = date ?? getDateString();
 const challenge = await createOrGetDailyChallenge(finalDate);
-if (!challenge) return Astro.rewrite("/404.html");
+if (!challenge) return Astro.redirect("/notFound");
 const { title: rawTitle } = challenge;
 const encodedTitle = encodeToBase64(rawTitle);
 const content = await extractDataFromWiki(rawTitle);
-if (!content || !encodedTitle) return Astro.rewrite("/500.html");
+if (!content || !encodedTitle) return Astro.redirect("/internalError");
 const { title, extract } = content;
 ---
 

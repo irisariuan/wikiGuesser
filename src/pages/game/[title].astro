@@ -10,10 +10,10 @@ import { getOrCreateChallengeAndReturnId } from "../../lib/server/challenge";
 const { title } = Astro.params;
 if (!title) return Astro.redirect("/");
 const finalTitle = decodeFromBase64(title);
-if (!finalTitle) return Astro.rewrite("/500.html");
+if (!finalTitle) return Astro.redirect("/internalError");
 const text = await extractDataFromWiki(finalTitle);
 const id = await getOrCreateChallengeAndReturnId(finalTitle);
-if (!text) return Astro.rewrite("/500.html");
+if (!text) return Astro.redirect("/internalError");
 ---
 
 <MainLayout subtitle="Game">
