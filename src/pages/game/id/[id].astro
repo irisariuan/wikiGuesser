@@ -12,7 +12,7 @@ const parsedId = Number(id);
 if (isNaN(parsedId)) return Astro.redirect("/notFound");
 const challenge = await getChallengeById(parsedId);
 if (!challenge) return Astro.redirect("/notFound");
-const { title } = challenge;
+const { title, hints } = challenge;
 const text = await extractDataFromWiki(title);
 if (!text) return Astro.redirect("/internalError");
 ---
@@ -29,6 +29,6 @@ if (!text) return Astro.redirect("/internalError");
 				/>
 			)
 		}
-		<GameFooter title={title} extract={text.extract} />
+		<GameFooter title={title} extract={text.extract} hints={hints} />
 	</div>
 </MainLayout>

@@ -21,10 +21,10 @@ const ChallengeRecord = defineTable({
 const HintsRecord = defineTable({
 	columns: {
 		id: column.number({
-			primaryKey: true,
 			references: () => ChallengeRecord.columns.id,
 		}),
 		hint: column.text({ multiline: true }),
+		hintId: column.number({ primaryKey: true, autoIncrement: true }),
 	},
 });
 
