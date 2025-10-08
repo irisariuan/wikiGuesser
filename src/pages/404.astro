@@ -1,0 +1,28 @@
+---
+import { IoCaretBackCircle } from "solid-icons/io";
+import MainLayout from "../layout/MainLayout.astro";
+import webIcon from "../assets/webIcon.png";
+import { Picture } from "astro:assets";
+---
+
+<MainLayout subtitle="Not Found">
+	<div class="h-full w-full flex items-center justify-center flex-col">
+		<Picture
+			src={webIcon}
+			formats={["avif", "webp"]}
+			alt="Icon of WikiGuesser"
+			class="w-24 h-24 mb-4 object-center"
+		/>
+		<h1 class="text-4xl font-bold">Not Found</h1>
+		<p class="italic">
+			Sorry, the page you are seeking for is not available
+		</p>
+		<a
+			href="/"
+			class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+		>
+			<IoCaretBackCircle />
+			<span>Go back to main page</span>
+		</a>
+	</div>
+</MainLayout>

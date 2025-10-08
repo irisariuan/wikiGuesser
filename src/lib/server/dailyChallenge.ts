@@ -1,35 +1,62 @@
-import "dotenv/config";
 import type { DailyChallenge } from "../dailyChallenge";
 import { getRandomWiki } from "../web";
-import { readFile, appendFile } from "fs/promises";
-const DAILY_CHALLENGE_FILE = process.env.DAILY_CHALLENGE_FILE_FULL_PATH;
-if (!DAILY_CHALLENGE_FILE)
-	throw new Error("DAILY_CHALLENGE_FILE env variable not set");
-
-const map = new Map<string, DailyChallenge>();
+import { ChallengeRecord, DailyChallengeRecord, db, eq } from "astro:db";
+import { encodeToBase64, getDateString } from "../utils";
 export async function createDailyChallenge(date: string, title: string) {
-	await appendFile(DAILY_CHALLENGE_FILE!, `${date};${title}\n`);
-	map.set(date, { date, title });
+	const encodedTitle = encodeToBase64(title);
+	if (!encodedTitle) throw new Error("Failed to encode title");
+	const result = await db
+		.insert(ChallengeRecord)
+		.values({
+			title: title,
+			encodedTitle: encodedTitle,
+		})
+		.returning({ insertedId: ChallengeRecord.id });
+	const [{ insertedId }] = result;
+	await db.insert(DailyChallengeRecord).values({
+		date: new Date(date),
+		id: insertedId,
+	});
 }
 export async function readDailyChallenges(): Promise<DailyChallenge[]> {
-	const challenges: DailyChallenge[] = [];
-	const lines = (await readFile(DAILY_CHALLENGE_FILE!, "utf-8")).split("\n");
-	for (const line of lines) {
-		const [date, ...titleStrings] = line.split(";");
-		const title = titleStrings.join(";");
-		if (date && title) {
-			challenges.push({ date, title });
-			map.set(date, { date, title });
-		}
-	}
-	return challenges;
+	const records = await db
+		.select()
+		.from(DailyChallengeRecord)
+		.innerJoin(
+			ChallengeRecord,
+			eq(DailyChallengeRecord.id, ChallengeRecord.id),
+		);
+	return records.map((r) => ({
+		date: getDateString(r.DailyChallengeRecord.date),
+		title: r.ChallengeRecord.title,
+		encodedTitle: r.ChallengeRecord.encodedTitle,
+	}));
 }
+
+export async function getDailyChallenge(
+	date: string,
+): Promise<DailyChallenge | null> {
+	const [result] = await db
+		.selectDistinct()
+		.from(DailyChallengeRecord)
+		.innerJoin(
+			ChallengeRecord,
+			eq(DailyChallengeRecord.id, ChallengeRecord.id),
+		)
+		.where(eq(DailyChallengeRecord.date, new Date(date)))
+		.catch(() => []);
+	if (!result) return null;
+	return {
+		date: getDateString(result.DailyChallengeRecord.date),
+		title: result.ChallengeRecord.title,
+		encodedTitle: result.ChallengeRecord.encodedTitle,
+	};
+}
+
 export async function createOrGetDailyChallenge(
 	date: string,
 ): Promise<(DailyChallenge & { created: boolean }) | null> {
-	if (map.has(date)) return { ...map.get(date)!, created: false };
-	const challenges = await readDailyChallenges();
-	const existing = challenges.find((c) => c.date === date);
+	const existing = await getDailyChallenge(date);
 	if (existing) return { ...existing, created: false };
 	const titleContent = await getRandomWiki(1);
 	if (!titleContent) return null;

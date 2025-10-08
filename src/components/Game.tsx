@@ -1,10 +1,9 @@
-import { IoCaretBackCircle } from "solid-icons/io";
 import { createEffect, createSignal, onMount, Show } from "solid-js";
 import { convertText, markNewGuessedLetters, type Letter } from "../lib/text";
 import type { ExtractedWikiResponseQueryPage } from "../lib/web";
+import EndCard from "./EndCard";
 import InputBar from "./InputBar";
 import LetterGrid from "./LetterGrid";
-import PopupCard from "./PopupCard";
 
 export default function Game(props: {
 	text: ExtractedWikiResponseQueryPage;
@@ -81,28 +80,10 @@ export default function Game(props: {
 	return (
 		<div class="h-full max-h-screen overflow-auto">
 			<Show when={showEndCard()}>
-				<PopupCard
-					title={
-						<h1 class="font-bold text-3xl text-zinc-600">
-							Congratulations!
-						</h1>
-					}
-					onClose={() => {
-						setShowEndCard(false);
-					}}
-				>
-					<p class="text-zinc-500 text-lg">
-						You has guessed the article in {guessed().length}{" "}
-						guesses!
-					</p>
-					<a
-						href="/"
-						class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
-					>
-						<IoCaretBackCircle />
-						<span>Go back to main page</span>
-					</a>
-				</PopupCard>
+				<EndCard
+					guessedLength={guessed().length}
+					setShowEndCard={setShowEndCard}
+				/>
 			</Show>
 			<div class="sticky top-0 backdrop-blur-3xl rounded-lg p-2 m-2">
 				<LetterGrid

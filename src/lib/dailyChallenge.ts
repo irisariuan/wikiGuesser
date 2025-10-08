@@ -4,6 +4,7 @@ export interface DailyChallenge {
 	 */
 	date: string;
 	title: string;
+	encodedTitle?: string;
 }
 
 export async function getTodayDailyChallenge(

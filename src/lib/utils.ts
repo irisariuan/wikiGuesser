@@ -14,7 +14,14 @@ export function decodeFromBase64(str: string) {
 		return null;
 	}
 }
-export function getDateString() {
-	const today = new Date();
-	return today.toISOString().split("T")[0];
+export function getDateString(date = new Date()) {
+	return date.toISOString().split("T")[0];
+}
+export function truncateText(
+	text: string,
+	maxLength: number,
+	wordToAdd = "...",
+) {
+	if (text.length <= maxLength + wordToAdd.length) return text;
+	return text.slice(0, maxLength + wordToAdd.length) + wordToAdd;
 }

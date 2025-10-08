@@ -7,28 +7,30 @@ import node from "@astrojs/node";
 
 import solidJs from "@astrojs/solid-js";
 
+import db from "@astrojs/db";
+
 // https://astro.build/config
 export default defineConfig({
-	vite: {
-		plugins: [tailwindcss()],
-	},
+    vite: {
+        plugins: [tailwindcss()],
+    },
 
-	adapter: node({
-		mode: "middleware",
-	}),
+    adapter: node({
+        mode: "middleware",
+    }),
 
-	integrations: [solidJs()],
-	env: {
-		schema: {
-			AI_KEY: envField.string({
-				context: "server",
-				access: "secret",
-			}),
-			AI_MODEL: envField.string({
-				context: "server",
-				access: "public",
-				default: "gpt-4o",
-			}),
-		},
-	},
+    integrations: [solidJs(), db()],
+    env: {
+        schema: {
+            AI_KEY: envField.string({
+                context: "server",
+                access: "secret",
+            }),
+            AI_MODEL: envField.string({
+                context: "server",
+                access: "public",
+                default: "gpt-4o",
+            }),
+        },
+    },
 });

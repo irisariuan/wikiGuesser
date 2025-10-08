@@ -3,37 +3,39 @@ export const prerender = false;
 interface Props {
 	dailyChallenge?: boolean;
 }
-
-import { encodeToBase64, getDateString } from "../lib/utils";
-import { getRandomWiki } from "../lib/web";
+import { getDateString } from "../lib/utils";
 import { createOrGetDailyChallenge } from "../lib/server/dailyChallenge";
 const { dailyChallenge = false } = Astro.props;
-let title: string | null = null;
 let date: string | null = null;
 
 if (dailyChallenge) {
 	const challenge = await createOrGetDailyChallenge(getDateString());
 	if (challenge) {
-		title = encodeToBase64(challenge.title);
 		date = challenge.date;
 	}
-} else {
-	const randomTitle = await getRandomWiki(1);
-	title = randomTitle ? encodeToBase64(randomTitle.title) : null;
 }
 ---
 
 {
-	title ? (
+	dailyChallenge ? (
+		date ? (
+			<a
+				href={`/game/daily/${date}`}
+				class="m-2 bg-rose-500 py-2 px-6 rounded-full text-white hover:bg-rose-600 transition-colors hover:cursor-pointer"
+			>
+				<slot />
+			</a>
+		) : (
+			<span class="m-2 bg-zinc-400 py-2 px-6 rounded-full text-zinc-300 transition-colors">
+				<slot />
+			</span>
+		)
+	) : (
 		<a
-			href={dailyChallenge ? `/game/daily/${date}` : `/game/${title}`}
+			href="/game/new"
 			class="m-2 bg-rose-500 py-2 px-6 rounded-full text-white hover:bg-rose-600 transition-colors hover:cursor-pointer"
 		>
 			<slot />
 		</a>
-	) : (
-		<span class="m-2 bg-zinc-400 py-2 px-6 rounded-full text-zinc-300 transition-colors">
-			<slot />
-		</span>
 	)
 }

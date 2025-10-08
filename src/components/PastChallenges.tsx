@@ -9,6 +9,7 @@ import {
 import PopupCard from "./PopupCard";
 import { getAllDailyChallenges } from "../lib/dailyChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
+import { truncateText } from "../lib/utils";
 
 export default function PastChallenges(props: { url: URL }) {
 	const [openPopup, setPopup] = createSignal(false);
@@ -48,6 +49,8 @@ export default function PastChallenges(props: { url: URL }) {
 									<IoCaretForwardCircle />
 									<a href={`/game/daily/${challenge.date}`}>
 										{challenge.date}
+										{challenge.encodedTitle &&
+											` - ${truncateText(challenge.encodedTitle, 10)}`}
 									</a>
 								</div>
 							)}

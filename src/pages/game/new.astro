@@ -1,0 +1,10 @@
+---
+import { encodeToBase64 } from "../../lib/utils";
+import { getRandomWiki } from "../../lib/web";
+
+const randomTitle = await getRandomWiki(1);
+if (!randomTitle) return Astro.redirect('/')
+const finalTitle = encodeToBase64(randomTitle.title)
+if (!finalTitle) return Astro.redirect('/')
+return Astro.redirect(`/game/${finalTitle}`)
+---
