@@ -35,6 +35,7 @@ export default function Game(props: {
 	}
 	const showAllSignal = createSignal(false);
 	const showOthersSignal = createSignal(false);
+	const [enableSave, setEnableSave] = createSignal(true);
 	const showAll = () => showAllSignal[0]();
 	const setShowAll = (value: boolean) => showAllSignal[1](value);
 	const showOthers = () => showOthersSignal[0]();
@@ -58,6 +59,8 @@ export default function Game(props: {
 			setShowAll(true);
 			setShowEndCard(true);
 			setHasShowedEndCard(true);
+			setEnableSave(false);
+			window.localStorage.removeItem(props.encodedTitle);
 		}
 	});
 
@@ -71,6 +74,7 @@ export default function Game(props: {
 	});
 
 	createEffect(() => {
+		if (guessed().length <= 0 || !enableSave()) return;
 		const letters = guessed().map((l) => l.char);
 		window.localStorage.setItem(
 			props.encodedTitle,
