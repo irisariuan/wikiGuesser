@@ -19,9 +19,18 @@ export type MayCreatedDailyChallenge = Pick<
 export async function getAllDailyChallenges(
 	url: URL,
 ): Promise<DailyChallenge[]> {
-	const finalUrl = new URL("/api/allDailyChallenges", url);
+	const finalUrl = new URL("/api/allChallenges", url);
+	finalUrl.searchParams.set("daily", "true");
 	const res = await fetch(finalUrl);
 	if (!res.ok) return [];
 	const data: DailyChallenge[] = await res.json().catch(() => []);
+	return data;
+}
+
+export async function getAllChallenges(url: URL): Promise<Omit<Challenge, 'hints'>[]> {
+	const finalUrl = new URL("/api/allChallenges", url);
+	const res = await fetch(finalUrl);
+	if (!res.ok) return [];
+	const data: Omit<Challenge, 'hints'>[] = await res.json().catch(() => []);
 	return data;
 }

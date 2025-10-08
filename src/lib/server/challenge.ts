@@ -146,3 +146,13 @@ export async function getChallengeById(id: number): Promise<Challenge | null> {
 		id: result.ChallengeRecord.id,
 	};
 }
+
+export async function getAllChallenges(): Promise<Omit<Challenge, 'hints'>[]> {
+	const result = await db
+		.select()
+		.from(ChallengeRecord)
+		.orderBy(asc(ChallengeRecord.id))
+		.catch(() => []);
+	if (!result) return [];
+	return result
+}

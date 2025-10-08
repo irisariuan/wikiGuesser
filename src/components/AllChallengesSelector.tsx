@@ -7,14 +7,14 @@ import {
 	Switch,
 } from "solid-js";
 import PopupCard from "./PopupCard";
-import { getAllDailyChallenges } from "../lib/dailyChallenge";
+import { getAllChallenges } from "../lib/dailyChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
 import { truncateText } from "../lib/utils";
 
-export default function PastChallenges(props: { url: URL }) {
+export default function AllChallengesSelector(props: { url: URL }) {
 	const [openPopup, setPopup] = createSignal(false);
 	const [challenges, { refetch }] = createResource(async () => {
-		return await getAllDailyChallenges(props.url).catch(() => []);
+		return await getAllChallenges(props.url).catch(() => []);
 	});
 	return (
 		<>
@@ -22,7 +22,7 @@ export default function PastChallenges(props: { url: URL }) {
 				<PopupCard
 					title={
 						<h1 class="font-bold text-3xl text-zinc-600 flex-1">
-							Select A Past Challenge
+							Select All Challenges
 						</h1>
 					}
 					onClose={() => setPopup(false)}
@@ -40,17 +40,23 @@ export default function PastChallenges(props: { url: URL }) {
 							each={challenges()}
 							fallback={
 								<p class="text-zinc-500 text-lg">
-									No past challenges found.
+									No challenges found.
 								</p>
 							}
 						>
 							{(challenge) => (
 								<div class="p-1 flex items-center gap-2 hover:underline text-zinc-500 text-lg hover:cursor-pointer hover:bg-zinc-500 hover:text-white rounded-xl">
 									<IoCaretForwardCircle />
-									<a href={`/game/daily/${challenge.date}`}>
-										{challenge.date}
-										{challenge.encodedTitle &&
-											` - ${truncateText(challenge.encodedTitle, 10)}`}
+									<a href={`/game/id/${challenge.id}`}>
+										#
+										{challenge.id
+											.toString()
+											.padStart(4, "0")}
+										-{" "}
+										{truncateText(
+											challenge.encodedTitle,
+											10,
+										)}
 									</a>
 								</div>
 							)}
@@ -61,7 +67,7 @@ export default function PastChallenges(props: { url: URL }) {
 							</Match>
 							<Match when={challenges.error}>
 								<p class="text-zinc-500 text-lg">
-									Failed to load past challenges.
+									Failed to load challenges.
 								</p>
 							</Match>
 						</Switch>
@@ -70,9 +76,9 @@ export default function PastChallenges(props: { url: URL }) {
 			</Show>
 			<button
 				on:click={() => setPopup(true)}
-				class="m-2 bg-yellow-500 py-2 px-6 rounded-full hover:bg-yellow-600 text-white transition-colors hover:cursor-pointer"
+				class="m-2 bg-emerald-500 py-2 px-6 rounded-full hover:bg-emerald-600 text-white transition-colors hover:cursor-pointer"
 			>
-				Past Challenges
+				All Challenges
 			</button>
 		</>
 	);

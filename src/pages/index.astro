@@ -36,14 +36,23 @@ import IdInput from "../components/IdInput.astro";
 					>
 				</StartGameButton>
 			</div>
-			<PastChallenge server:defer
+			<PastChallenge isDailyChallenges server:defer
 				><p
 					slot="fallback"
 					class="m-2 bg-yellow-800 py-2 px-6 rounded-full text-white text-center"
 				>
-					Past Challenges
+					Past Daily Challenges
 				</p></PastChallenge
 			>
+			<PastChallenge isDailyChallenges={false} server:defer
+				><p
+					slot="fallback"
+					class="m-2 bg-emerald-800 py-2 px-6 rounded-full text-white text-center"
+				>
+					All Challenges
+				</p></PastChallenge
+			>
+			
 			<IdInput />
 		</div>
 	</div>

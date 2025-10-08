@@ -1,8 +1,18 @@
 ---
 export const prerender = false;
-import PastChallenges from "./PastChallenges";
-
+interface Props {
+	isDailyChallenges: boolean;
+}
+import DailyChallengesSelector from "./DailyChallengesSelector";
+import AllChallengesSelector from "./AllChallengesSelector";
+const { isDailyChallenges } = Astro.props;
 const url = Astro.url;
 ---
 
-<PastChallenges url={url} client:load />
+{
+	isDailyChallenges ? (
+		<DailyChallengesSelector url={url} client:load />
+	) : (
+		<AllChallengesSelector url={url} client:load />
+	)
+}
