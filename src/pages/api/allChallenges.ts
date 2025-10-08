@@ -7,7 +7,12 @@ import {
 
 export const GET: APIRoute = async (req) => {
 	if (req.url.searchParams.get("daily") === "true") {
-		const challenges = await readDailyChallenges();
+		const challenges = await readDailyChallenges().catch(() => null);
+		if (!challenges) {
+			return new Response("Failed to get daily challenges", {
+				status: 500,
+			});
+		}
 		return new Response(JSON.stringify(challenges), {
 			headers: { "Content-Type": "application/json" },
 		});
