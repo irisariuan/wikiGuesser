@@ -1,0 +1,17 @@
+---
+interface Props {
+	id: number;
+	starred: boolean;
+	title: string;
+}
+export const prerender = false;
+import StarSwitch from "./StarSwitch";
+const { id, starred, title } = Astro.props;
+---
+
+<div class="flex items-center m-2 gap-2">
+	<h1 class="text-4xl font-bold">
+		#{id.toString().padStart(4, "0")}
+	</h1>
+	<StarSwitch client:load starred={starred} url={Astro.url} title={title} />
+</div>

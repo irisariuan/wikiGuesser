@@ -3,6 +3,7 @@ export const prerender = false;
 
 import Game from "../../../components/Game";
 import GameFooter from "../../../components/GameFooter.astro";
+import TitleBar from "../../../components/TitleBar.astro";
 import MainLayout from "../../../layout/MainLayout.astro";
 import { createOrGetDailyChallenge } from "../../../lib/server/challenge";
 import { encodeToBase64, getDateString } from "../../../lib/utils";
@@ -10,7 +11,10 @@ import { extractDataFromWiki } from "../../../lib/web";
 
 const { date } = Astro.params;
 const finalDate = date ?? getDateString();
-const challenge = await createOrGetDailyChallenge(finalDate, date === getDateString());
+const challenge = await createOrGetDailyChallenge(
+	finalDate,
+	date === getDateString(),
+);
 if (!challenge) return Astro.redirect("/notFound");
 const { title: rawTitle } = challenge;
 const encodedTitle = encodeToBase64(rawTitle);
@@ -24,12 +28,8 @@ const { title, extract } = content;
 		<h1 class="text-2xl font-bold mt-2">
 			Daily Challenge for {date}
 		</h1>
-		<Game
-			client:load
-			text={content}
-			encodedTitle={encodedTitle}
-			id={challenge.id}
-		/>
+		<TitleBar id={challenge.id} starred={challenge.starred} title={title} />
+		<Game client:load text={content} encodedTitle={encodedTitle} />
 		<GameFooter title={title} extract={extract} />
 	</div>
 </MainLayout>

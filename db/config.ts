@@ -12,9 +12,10 @@ const DailyChallengeRecord = defineTable({
 
 const ChallengeRecord = defineTable({
 	columns: {
-		title: column.text(),
+		title: column.text({ unique: true }),
 		encodedTitle: column.text(),
 		id: column.number({ primaryKey: true, autoIncrement: true }),
+		starred: column.boolean({ default: false }),
 	},
 });
 

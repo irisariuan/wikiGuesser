@@ -3,32 +3,26 @@ export const prerender = false;
 import Game from "../../../components/Game";
 import GameFooter from "../../../components/GameFooter.astro";
 import MainLayout from "../../../layout/MainLayout.astro";
+import TitleBar from "../../../components/TitleBar.astro";
 import { getChallengeById } from "../../../lib/server/challenge";
 import { extractDataFromWiki } from "../../../lib/web";
+import type { Challenge } from "../../../lib/clientChallenge";
 
 const { id } = Astro.params;
 if (!id) return Astro.redirect("/");
 const parsedId = Number(id);
 if (isNaN(parsedId)) return Astro.redirect("/notFound");
-const challenge = await getChallengeById(parsedId);
+const challenge: Challenge | null = await getChallengeById(parsedId);
 if (!challenge) return Astro.redirect("/notFound");
-const { title, hints } = challenge;
+const { title, hints, starred, encodedTitle } = challenge;
 const text = await extractDataFromWiki(title);
 if (!text) return Astro.redirect("/internalError");
 ---
 
 <MainLayout subtitle="Game">
 	<div class="flex flex-col items-center gap-4">
-		{
-			text && (
-				<Game
-					client:load
-					text={text}
-					encodedTitle={title}
-					id={parsedId}
-				/>
-			)
-		}
+		<TitleBar id={parsedId} starred={starred} title={title} />
+		{text && <Game client:load text={text} encodedTitle={encodedTitle} />}
 		<GameFooter title={title} extract={text.extract} hints={hints} />
 	</div>
 </MainLayout>

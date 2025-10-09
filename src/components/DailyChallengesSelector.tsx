@@ -7,7 +7,7 @@ import {
 	Switch,
 } from "solid-js";
 import PopupCard from "./PopupCard";
-import { getAllDailyChallenges } from "../lib/dailyChallenge";
+import { getAllDailyChallenges } from "../lib/clientChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
 
 export default function DailyChallengesSelector(props: { url: URL }) {

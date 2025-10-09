@@ -2,7 +2,7 @@ import type {
 	Challenge,
 	DailyChallenge,
 	MayCreatedDailyChallenge,
-} from "../dailyChallenge";
+} from "../clientChallenge";
 import { getRandomWiki } from "../web";
 import {
 	asc,
@@ -37,7 +37,7 @@ export async function createDailyChallenge(date: string, title: string) {
 }
 export async function readDailyChallenges(): Promise<DailyChallenge[]> {
 	const records = await db
-		.select()
+		.selectDistinct()
 		.from(DailyChallengeRecord)
 		.innerJoin(
 			ChallengeRecord,
@@ -53,6 +53,7 @@ export async function readDailyChallenges(): Promise<DailyChallenge[]> {
 		encodedTitle: r.ChallengeRecord.encodedTitle,
 		hints: r.HintsRecord?.hint.split("\n") ?? [],
 		id: r.ChallengeRecord.id,
+		starred: r.ChallengeRecord.starred,
 	}));
 }
 
@@ -77,12 +78,13 @@ export async function getDailyChallenge(
 		encodedTitle: result.ChallengeRecord.encodedTitle,
 		hints: result.HintsRecord?.hint.split("\n") ?? [],
 		id: result.ChallengeRecord.id,
+		starred: result.ChallengeRecord.starred,
 	};
 }
 
 export async function createOrGetDailyChallenge(
 	date: string,
-	allowCreate: boolean
+	allowCreate: boolean,
 ): Promise<MayCreatedDailyChallenge | null> {
 	const existing = await getDailyChallenge(date);
 	if (existing) return { ...existing, created: false };
@@ -91,7 +93,7 @@ export async function createOrGetDailyChallenge(
 	if (!titleContent) return null;
 	const title = titleContent.title;
 	const id = await createDailyChallenge(date, title);
-	const newChallenge = { date, title, id, created: true };
+	const newChallenge = { date, title, id, created: true, starred: false };
 	return newChallenge;
 }
 
@@ -108,34 +110,62 @@ export async function getChallenge(title: string): Promise<Challenge | null> {
 		encodedTitle: result.ChallengeRecord.encodedTitle,
 		hints: result.HintsRecord?.hint.split("\n") ?? [],
 		id: result.ChallengeRecord.id,
+		starred: result.ChallengeRecord.starred,
 	};
 }
 
-export async function createChallenge(title: string): Promise<number | null> {
+export async function createChallenge(
+	title: string,
+): Promise<Challenge | null> {
 	const encodedTitle = encodeToBase64(title);
 	if (!encodedTitle) return null;
-	const [{ insertedId }] = await db
+	const [inserted] = await db
 		.insert(ChallengeRecord)
 		.values({
 			title,
 			encodedTitle,
 		})
-		.returning({ insertedId: ChallengeRecord.id })
-		.catch(() => [{ insertedId: null }]);
-	return insertedId;
+		.returning()
+		.catch(() => [null]);
+	return inserted ? { ...inserted, hints: [] } : null;
 }
 
-export async function getOrCreateChallengeAndReturnId(
+export async function getOrCreateChallenge(
 	title: string,
-): Promise<number | null> {
+): Promise<Challenge | null> {
 	const existing = await getChallenge(title);
-	if (existing) return existing.id;
+	if (existing) return existing;
 	return await createChallenge(title);
+}
+
+export async function updateChallenge(
+	challenge: Pick<Challenge, "id"> & Partial<Challenge>,
+) {
+	const result = await db
+		.update(ChallengeRecord)
+		.set({
+			title: challenge.title,
+			encodedTitle: challenge.encodedTitle,
+			starred: challenge.starred,
+		})
+		.where(eq(ChallengeRecord.id, challenge.id))
+		.catch(() => null);
+	if (!result) return false;
+	if (challenge.hints) {
+		await db
+			.update(HintsRecord)
+			.set({
+				hint: challenge.hints.join("\n"),
+			})
+			.where(eq(HintsRecord.id, challenge.id))
+			.catch(() => null);
+	}
+	return result.rowsAffected > 0;
 }
 
 export async function getChallengeById(id: number): Promise<Challenge | null> {
 	const [result] = await db
-		.select()
+		.selectDistinct()
 		.from(ChallengeRecord)
 		.where(eq(ChallengeRecord.id, id))
 		.leftJoin(HintsRecord, eq(ChallengeRecord.id, HintsRecord.id))
@@ -146,15 +176,22 @@ export async function getChallengeById(id: number): Promise<Challenge | null> {
 		encodedTitle: result.ChallengeRecord.encodedTitle,
 		hints: result.HintsRecord?.hint.split("\n") ?? [],
 		id: result.ChallengeRecord.id,
+		starred: result.ChallengeRecord.starred,
 	};
 }
 
-export async function getAllChallenges(): Promise<Omit<Challenge, 'hints'>[]> {
+export async function getAllChallenges(): Promise<Omit<Challenge, "hints">[]> {
 	const result = await db
-		.select()
+		.selectDistinct()
 		.from(ChallengeRecord)
+		.leftJoin(HintsRecord, eq(ChallengeRecord.id, HintsRecord.id))
 		.orderBy(asc(ChallengeRecord.id))
 		.catch(() => []);
 	if (!result) return [];
-	return result
+	return result.map((v) => ({
+		title: v.ChallengeRecord.title,
+		encodedTitle: v.ChallengeRecord.encodedTitle,
+		id: v.ChallengeRecord.id,
+		starred: v.ChallengeRecord.starred,
+	}));
 }

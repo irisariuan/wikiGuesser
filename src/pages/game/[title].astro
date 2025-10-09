@@ -5,20 +5,24 @@ import GameFooter from "../../components/GameFooter.astro";
 import MainLayout from "../../layout/MainLayout.astro";
 import { decodeFromBase64 } from "../../lib/utils";
 import { extractDataFromWiki } from "../../lib/web";
-import { getOrCreateChallengeAndReturnId } from "../../lib/server/challenge";
+import { getOrCreateChallenge } from "../../lib/server/challenge";
+import TitleBar from "../../components/TitleBar.astro";
+import type { Challenge } from "../../lib/clientChallenge";
 
-const { title } = Astro.params;
-if (!title) return Astro.redirect("/");
-const finalTitle = decodeFromBase64(title);
+const { title: rawTitle } = Astro.params;
+if (!rawTitle) return Astro.redirect("/");
+const finalTitle = decodeFromBase64(rawTitle);
 if (!finalTitle) return Astro.redirect("/internalError");
 const text = await extractDataFromWiki(finalTitle);
-const id = await getOrCreateChallengeAndReturnId(finalTitle);
-if (!text) return Astro.redirect("/internalError");
+const challenge: Challenge | null = await getOrCreateChallenge(finalTitle);
+if (!text || !challenge) return Astro.redirect("/internalError");
+const { id, starred, title } = challenge;
 ---
 
 <MainLayout subtitle="Game">
 	<div class="flex flex-col items-center gap-4">
-		{text && <Game client:load text={text} encodedTitle={title} id={id} />}
+		<TitleBar id={id} starred={starred} title={title} />
+		{text && <Game client:load text={text} encodedTitle={rawTitle} />}
 		<GameFooter title={text.title} extract={text.extract} />
 	</div>
 </MainLayout>
