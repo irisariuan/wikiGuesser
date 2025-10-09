@@ -82,9 +82,11 @@ export async function getDailyChallenge(
 
 export async function createOrGetDailyChallenge(
 	date: string,
+	allowCreate: boolean
 ): Promise<MayCreatedDailyChallenge | null> {
 	const existing = await getDailyChallenge(date);
 	if (existing) return { ...existing, created: false };
+	if (!allowCreate) return null;
 	const titleContent = await getRandomWiki(1);
 	if (!titleContent) return null;
 	const title = titleContent.title;

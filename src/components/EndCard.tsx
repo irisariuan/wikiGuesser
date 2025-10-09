@@ -18,14 +18,14 @@ export default function EndCard(props: {
 			}}
 		>
 			<p class="text-zinc-500 text-lg">
-				You has guessed the article in {props.guessedLength} guesses!
+				You have guessed the article in {props.guessedLength} guesses!
 			</p>
 			<a
 				href="/"
 				class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
 			>
 				<IoCaretBackCircle />
-				<span>Go back to main page</span>
+				<span>Go back to the main page</span>
 			</a>
 			<a
 				href="/game/new"

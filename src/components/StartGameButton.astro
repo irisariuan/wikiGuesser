@@ -9,7 +9,7 @@ const { dailyChallenge = false } = Astro.props;
 let date: string | null = null;
 
 if (dailyChallenge) {
-	const challenge = await createOrGetDailyChallenge(getDateString());
+	const challenge = await createOrGetDailyChallenge(getDateString(), true);
 	if (challenge) {
 		date = challenge.date;
 	}

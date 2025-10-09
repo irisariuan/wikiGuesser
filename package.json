@@ -1,33 +1,33 @@
 {
-  "name": "wikiguesser",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/db": "^0.18.0",
-    "@astrojs/node": "^9.4.4",
-    "@astrojs/solid-js": "^5.1.1",
-    "@nanostores/persistent": "^1.1.0",
-    "@nanostores/solid": "^1.1.1",
-    "@tailwindcss/vite": "^4.1.13",
-    "@types/express": "^5.0.3",
-    "@types/jsdom": "^27.0.0",
-    "@types/opencc-js": "^1.0.3",
-    "astro": "^5.14.1",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "jsdom": "^27.0.0",
-    "marked": "^16.3.0",
-    "nanostores": "^1.0.1",
-    "opencc-js": "^1.0.5",
-    "solid-icons": "^1.1.0",
-    "solid-js": "^1.9.9",
-    "tailwindcss": "^4.1.13",
-    "zod": "^4.1.11"
-  }
+	"name": "wikiguesser",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@astrojs/db": "^0.18.0",
+		"@astrojs/node": "^9.4.4",
+		"@astrojs/solid-js": "^5.1.1",
+		"@nanostores/persistent": "^1.1.0",
+		"@nanostores/solid": "^1.1.1",
+		"@tailwindcss/vite": "^4.1.13",
+		"@types/express": "^5.0.3",
+		"@types/jsdom": "^27.0.0",
+		"@types/opencc-js": "^1.0.3",
+		"astro": "^5.14.1",
+		"dotenv": "^17.2.3",
+		"express": "^5.1.0",
+		"jsdom": "^27.0.0",
+		"marked": "^16.3.0",
+		"nanostores": "^1.0.1",
+		"opencc-js": "^1.0.5",
+		"solid-icons": "^1.1.0",
+		"solid-js": "^1.9.9",
+		"tailwindcss": "^4.1.13",
+		"zod": "^4.1.11"
+	}
 }

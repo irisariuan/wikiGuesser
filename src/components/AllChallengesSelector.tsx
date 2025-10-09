@@ -9,7 +9,6 @@ import {
 import PopupCard from "./PopupCard";
 import { getAllChallenges } from "../lib/dailyChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
-import { truncateText } from "../lib/utils";
 
 export default function AllChallengesSelector(props: { url: URL }) {
 	const [openPopup, setPopup] = createSignal(false);
@@ -52,11 +51,6 @@ export default function AllChallengesSelector(props: { url: URL }) {
 										{challenge.id
 											.toString()
 											.padStart(4, "0")}
-										-{" "}
-										{truncateText(
-											challenge.encodedTitle,
-											10,
-										)}
 									</a>
 								</div>
 							)}

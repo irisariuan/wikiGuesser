@@ -9,7 +9,6 @@ import {
 import PopupCard from "./PopupCard";
 import { getAllDailyChallenges } from "../lib/dailyChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
-import { truncateText } from "../lib/utils";
 
 export default function DailyChallengesSelector(props: { url: URL }) {
 	const [openPopup, setPopup] = createSignal(false);
@@ -48,9 +47,7 @@ export default function DailyChallengesSelector(props: { url: URL }) {
 								<div class="p-1 flex items-center gap-2 hover:underline text-zinc-500 text-lg hover:cursor-pointer hover:bg-zinc-500 hover:text-white rounded-xl">
 									<IoCaretForwardCircle />
 									<a href={`/game/daily/${challenge.date}`}>
-										{challenge.date}
-										{challenge.encodedTitle &&
-											` - ${truncateText(challenge.encodedTitle, 10)}`}
+										{challenge.date} - #{challenge.id}
 									</a>
 								</div>
 							)}

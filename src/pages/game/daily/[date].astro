@@ -10,7 +10,7 @@ import { extractDataFromWiki } from "../../../lib/web";
 
 const { date } = Astro.params;
 const finalDate = date ?? getDateString();
-const challenge = await createOrGetDailyChallenge(finalDate);
+const challenge = await createOrGetDailyChallenge(finalDate, date === getDateString());
 if (!challenge) return Astro.redirect("/notFound");
 const { title: rawTitle } = challenge;
 const encodedTitle = encodeToBase64(rawTitle);
