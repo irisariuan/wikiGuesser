@@ -1,6 +1,7 @@
 import type {
 	Challenge,
 	DailyChallenge,
+	MayCreated,
 	MayCreatedDailyChallenge,
 } from "../clientChallenge";
 import { getRandomWiki } from "../web";
@@ -123,10 +124,12 @@ export async function createChallenge(
 
 export async function getOrCreateChallenge(
 	title: string,
-): Promise<Challenge | null> {
+): Promise<MayCreated<Challenge> | null> {
 	const existing = await getChallenge(title);
-	if (existing) return existing;
-	return await createChallenge(title);
+	if (existing) return { ...existing, created: false };
+	const result = await createChallenge(title);
+	if (!result) return null;
+	return { ...result, created: true };
 }
 
 export async function updateChallenge(

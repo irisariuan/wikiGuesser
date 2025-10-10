@@ -73,6 +73,7 @@ export async function extractDataFromWiki(
 		.catch(() => null)) as ExtractedWikiResponse<boolean> | null;
 	if (!data || !data.batchcomplete || !data.query?.pages?.[0]) return null;
 	const mayContainHtml = data.query.pages[0];
+	if (mayContainHtml.extract.trim().length === 0) return null;
 	const converter = Converter({ from: "cn", to: "hk" });
 	const newTitle = converter(mayContainHtml.title.replaceAll(" ", ""));
 	return {
@@ -130,4 +131,18 @@ export async function getRandomWiki(
 	if (!data) return null;
 	if (limit === 1) return data.query.random[0];
 	return data.query.random;
+}
+
+export async function extractContentLengthFromWiki(title: string) {
+	const url = new URL(
+		"https://zh.wikipedia.org/w/api.php?action=query&prop=info&inprop=url&format=json&formatversion=2",
+	);
+	url.searchParams.set("titles", title);
+	const res = await fetch(url).catch(() => null);
+	if (!res || !res.ok) return null;
+	const data = (await res.json().catch(() => null)) as {
+		query?: { pages: { length: number }[] };
+	} | null;
+	if (!data?.query?.pages?.[0]?.length) return null;
+	return data.query.pages[0].length;
 }

@@ -14,6 +14,14 @@ export function decodeFromBase64(str: string) {
 		return null;
 	}
 }
+export function safeDecodeURIComponent(str: string) {
+	try {
+		return decodeURIComponent(str);
+	} catch {
+		return null;
+	}
+}
+
 export function getDateString(date = new Date()) {
 	return date.toISOString().split("T")[0];
 }

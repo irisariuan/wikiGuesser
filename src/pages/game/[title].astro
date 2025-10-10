@@ -5,7 +5,7 @@ import GameFooter from "../../components/GameFooter.astro";
 import MainLayout from "../../layout/MainLayout.astro";
 import { decodeFromBase64 } from "../../lib/utils";
 import { extractDataFromWiki } from "../../lib/web";
-import { getOrCreateChallenge } from "../../lib/server/challenge";
+import { getChallenge } from "../../lib/server/challenge";
 import TitleBar from "../../components/TitleBar.astro";
 import type { Challenge } from "../../lib/clientChallenge";
 
@@ -15,7 +15,7 @@ const finalTitle = decodeFromBase64(rawTitle);
 if (!finalTitle) return Astro.redirect("/internalError");
 const text = await extractDataFromWiki(finalTitle);
 if (!text) return Astro.redirect("/notFound");
-const challenge: Challenge | null = await getOrCreateChallenge(finalTitle);
+const challenge: Challenge | null = await getChallenge(finalTitle);
 if (!challenge) return Astro.redirect("/internalError");
 const { id, starred, title } = challenge;
 ---

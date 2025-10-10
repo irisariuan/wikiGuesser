@@ -22,27 +22,29 @@ import TitleRedirectInput from "../components/TitleRedirectInput.astro";
 		<div class="mt-8 flex flex-col">
 			<div class="flex">
 				<StartGameButton server:defer>
-					<span>Start Game</span>
-					<span
+					<p class="text-center">Start Game</p>
+					<p
 						slot="fallback"
-						class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors"
-						>Start Game</span
+						class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors text-center"
 					>
+						Start Game
+					</p>
 				</StartGameButton>
 				<StartGameButton dailyChallenge server:defer>
-					<span>Daily Challenge</span>
-					<span
+					<p class="text-center">Daily Challenge</p>
+					<p
 						slot="fallback"
-						class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors"
-						>Daily Challenge</span
+						class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors text-center"
 					>
+						Daily Challenge
+					</p>
 				</StartGameButton>
 			</div>
 			<Selectors server:defer>
 				<PlaceholderSelectors slot="fallback" />
 			</Selectors>
 			<IdInput />
-			<!-- <TitleRedirectInput /> -->
+			<TitleRedirectInput server:defer />
 		</div>
 	</div>
 </MainLayout>

@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({ request }) => {
 	}
 	const { title, starred } = parsed.data;
 	const challenge = await getChallenge(title);
-	console.log(title)
+	console.log(title);
 	if (!challenge) return new Response("Challenge not found", { status: 404 });
 	const success = await updateChallenge({
 		id: challenge.id,
@@ -26,8 +26,5 @@ export const POST: APIRoute = async ({ request }) => {
 
 	return new Response("OK", {
 		status: 200,
-		headers: {
-			"Content-Type": "application/json",
-		},
 	});
 };

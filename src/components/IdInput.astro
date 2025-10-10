@@ -30,15 +30,18 @@ import { IoSend } from "solid-icons/io";
 			};
 		}
 		document.addEventListener("keydown", (e) => {
-			if (e.key === "Enter") {
+			if (
+				e.currentTarget === document.activeElement &&
+				e.key === "Enter"
+			) {
 				handleInput();
 			}
 		});
 	};
 </script>
-<div class="flex items-center">
+<div class="flex items-center gap-2 m-2">
 	<div
-		class="bg-zinc-200 p-2 rounded-full focus-within:outline outline-zinc-700 m-2 flex-1 flex flex-row-reverse items-center gap-1 has-invalid:outline-rose-500 peer"
+		class="bg-zinc-200 p-2 rounded-full focus-within:outline outline-zinc-700 flex-1 flex flex-row-reverse items-center gap-1 has-invalid:outline-rose-500 peer"
 	>
 		<input
 			id="challengeIdInput"

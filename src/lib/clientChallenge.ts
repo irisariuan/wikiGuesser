@@ -12,10 +12,11 @@ export interface DailyChallenge extends Challenge {
 	 */
 	date: string;
 }
-export type MayCreatedDailyChallenge = Pick<
-	DailyChallenge,
-	"date" | "title" | "id" | "starred"
-> & { created: boolean };
+export type MayCreated<T> = T & { created: boolean };
+
+export type MayCreatedDailyChallenge = MayCreated<
+	Pick<DailyChallenge, "date" | "title" | "id" | "starred">
+>;
 
 export async function getAllDailyChallenges(
 	url: URL,
@@ -49,6 +50,32 @@ export async function setStarChallenge(
 			"Content-Type": "application/json",
 		},
 		body: JSON.stringify({ title, starred }),
+	});
+	return res.ok;
+}
+
+export async function createChallenge(title: string, url: URL) {
+	const finalUrl = new URL("/api/newChallenge", url);
+	const res = await fetch(finalUrl, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ title }),
+	});
+	if (!res.ok) return null;
+	const data: MayCreated<Pick<Challenge, "id" | "encodedTitle">> | null =
+		await res.json().catch(() => null);
+	return data;
+}
+export async function checkChallenge(title: string, url: URL) {
+	const finalUrl = new URL("/api/newChallenge", url);
+	const res = await fetch(finalUrl, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify({ title, create: false }),
 	});
 	return res.ok;
 }
