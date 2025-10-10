@@ -11,12 +11,14 @@ import PopupCard from "./PopupCard";
 import { getAllDailyChallenges } from "../lib/clientChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
 import { AiFillStar } from "solid-icons/ai";
+import { OcFeedstar2 } from "solid-icons/oc";
 
 export default function DailyChallengesSelector(props: { url: URL }) {
 	const [openPopup, setPopup] = createSignal(false);
 	const [challenges, { refetch }] = createResource(async () => {
 		return await getAllDailyChallenges(props.url).catch(() => []);
 	});
+	const [filterStar, setFilterStar] = createSignal(false);
 
 	const timer = setInterval(() => {
 		if (openPopup()) {
@@ -36,17 +38,33 @@ export default function DailyChallengesSelector(props: { url: URL }) {
 					}
 					onClose={() => setPopup(false)}
 					extraTitleElement={
-						<button
-							on:click={() => refetch()}
-							class="text-3xl text-zinc-600 hover:text-zinc-900 cursor-pointer"
-						>
-							<IoRefreshCircle />
-						</button>
+						<>
+							<button
+								on:click={() => refetch()}
+								class="text-3xl text-zinc-600 hover:text-zinc-900 cursor-pointer mx-1"
+							>
+								<IoRefreshCircle />
+							</button>
+							<button
+								on:click={() => setFilterStar(!filterStar())}
+								class={`text-2xl mr-1 ${
+									filterStar()
+										? "text-yellow-800 hover:text-zinc-900"
+										: "text-zinc-600 hover:text-yellow-900"
+								} cursor-pointer`}
+							>
+								<OcFeedstar2 />
+							</button>
+						</>
 					}
 				>
 					<div class="flex flex-col my-4 gap-2 overflow-y-auto">
 						<For
-							each={challenges()}
+							each={
+								filterStar()
+									? challenges()?.filter((v) => v.starred)
+									: challenges()
+							}
 							fallback={
 								<p class="text-zinc-500 text-lg">
 									No daily challenges found.
@@ -54,15 +72,17 @@ export default function DailyChallengesSelector(props: { url: URL }) {
 							}
 						>
 							{(challenge) => (
-								<div class="p-1 flex items-center gap-2 hover:underline text-zinc-500 text-lg hover:cursor-pointer hover:bg-zinc-500 hover:text-white rounded-xl">
-									<IoCaretForwardCircle />
-									<a href={`/game/daily/${challenge.date}`}>
-										{challenge.date} - #{challenge.id}
-									</a>
-									<Show when={challenge.starred}>
-										<AiFillStar class="text-xl" />
-									</Show>
-								</div>
+								<a href={`/game/daily/${challenge.date}`}>
+									<div class="p-1 flex items-center gap-2 hover:underline text-zinc-500 text-lg hover:cursor-pointer hover:bg-zinc-500 hover:text-white rounded-xl">
+										<IoCaretForwardCircle />
+										<span>
+											{challenge.date} - #{challenge.id}
+										</span>
+										<Show when={challenge.starred}>
+											<AiFillStar class="text-xl" />
+										</Show>
+									</div>
+								</a>
 							)}
 						</For>
 						<Switch>
