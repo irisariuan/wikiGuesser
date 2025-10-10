@@ -14,8 +14,9 @@ if (!rawTitle) return Astro.redirect("/");
 const finalTitle = decodeFromBase64(rawTitle);
 if (!finalTitle) return Astro.redirect("/internalError");
 const text = await extractDataFromWiki(finalTitle);
+if (!text) return Astro.redirect("/notFound");
 const challenge: Challenge | null = await getOrCreateChallenge(finalTitle);
-if (!text || !challenge) return Astro.redirect("/internalError");
+if (!challenge) return Astro.redirect("/internalError");
 const { id, starred, title } = challenge;
 ---
 

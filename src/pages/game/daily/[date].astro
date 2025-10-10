@@ -28,7 +28,11 @@ const { title, extract } = content;
 		<h1 class="text-2xl font-bold mt-2">
 			Daily Challenge for {date}
 		</h1>
-		<TitleBar id={challenge.id} starred={challenge.starred} title={title} />
+		<TitleBar
+			id={challenge.id}
+			starred={challenge.starred}
+			title={rawTitle}
+		/>
 		<Game client:load text={content} encodedTitle={encodedTitle} />
 		<GameFooter title={title} extract={extract} />
 	</div>

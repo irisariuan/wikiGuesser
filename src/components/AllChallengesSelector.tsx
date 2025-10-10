@@ -3,18 +3,28 @@ import {
 	createSignal,
 	For,
 	Match,
+	onCleanup,
 	Show,
 	Switch,
 } from "solid-js";
 import PopupCard from "./PopupCard";
 import { getAllChallenges } from "../lib/clientChallenge";
 import { IoCaretForwardCircle, IoRefreshCircle } from "solid-icons/io";
+import { AiFillStar } from "solid-icons/ai";
 
 export default function AllChallengesSelector(props: { url: URL }) {
 	const [openPopup, setPopup] = createSignal(false);
 	const [challenges, { refetch }] = createResource(async () => {
 		return await getAllChallenges(props.url).catch(() => []);
 	});
+
+	const timer = setInterval(() => {
+		if (openPopup()) {
+			refetch();
+		}
+	}, 10000); // Refresh every 10 seconds
+	onCleanup(() => clearInterval(timer));
+
 	return (
 		<>
 			<Show when={openPopup()}>
@@ -52,6 +62,9 @@ export default function AllChallengesSelector(props: { url: URL }) {
 											.toString()
 											.padStart(4, "0")}
 									</a>
+									<Show when={challenge.starred}>
+										<AiFillStar class="text-xl" />
+									</Show>
 								</div>
 							)}
 						</For>

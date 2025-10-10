@@ -27,7 +27,7 @@ export default function StarSwitch(props: {
 			</Match>
 			<Match when={!isStarred()}>
 				<button
-					class="text-white text-3xl hover:cursor-pointer"
+					class="text-zinc-700 text-3xl hover:cursor-pointer"
 					on:click={() => handleClick(true)}
 				>
 					<AiOutlineStar />

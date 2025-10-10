@@ -4,9 +4,9 @@ const DailyChallengeRecord = defineTable({
 	columns: {
 		date: column.date({ unique: true }),
 		id: column.number({
-			primaryKey: true,
 			references: () => ChallengeRecord.columns.id,
 		}),
+		dailyId: column.number({ primaryKey: true, autoIncrement: true }),
 	},
 });
 

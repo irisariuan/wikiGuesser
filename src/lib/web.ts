@@ -16,6 +16,12 @@ export interface ExtractedWikiResponseQueryPage {
 	extract: string;
 }
 
+export interface ExtractedWikiResponseQueryPageReturn
+	extends ExtractedWikiResponseQueryPage {
+	originalExtract: string;
+	originalTitle: string;
+}
+
 export function removeHtml(html: string, removeEnglish = false) {
 	const dom = new JSDOM(html);
 	const document = dom.window.document;
@@ -49,9 +55,7 @@ export function removeHtml(html: string, removeEnglish = false) {
 
 export async function extractDataFromWiki(
 	title: string,
-): Promise<
-	({ originalExtract: string } & ExtractedWikiResponseQueryPage) | null
-> {
+): Promise<ExtractedWikiResponseQueryPageReturn | null> {
 	const url = new URL("https://zh.wikipedia.org/w/api.php");
 	url.searchParams.set("action", "query");
 	url.searchParams.set("variant", "zh-hk");
@@ -64,10 +68,9 @@ export async function extractDataFromWiki(
 	url.searchParams.set("redirects", "1");
 	const response = await fetch(url).catch(() => null);
 	if (!response || !response.ok) return null;
-	const data = (await response.json().catch(() => {
-		console.error("Failed to parse JSON from wiki");
-		return null;
-	})) as ExtractedWikiResponse<boolean> | null;
+	const data = (await response
+		.json()
+		.catch(() => null)) as ExtractedWikiResponse<boolean> | null;
 	if (!data || !data.batchcomplete || !data.query?.pages?.[0]) return null;
 	const mayContainHtml = data.query.pages[0];
 	const converter = Converter({ from: "cn", to: "hk" });
@@ -77,6 +80,7 @@ export async function extractDataFromWiki(
 		extract: removeHtml(mayContainHtml.extract),
 		originalExtract: mayContainHtml.extract,
 		title: newTitle,
+		originalTitle: mayContainHtml.title,
 	};
 }
 

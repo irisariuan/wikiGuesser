@@ -14,26 +14,14 @@ import {
 } from "astro:db";
 import { encodeToBase64, getDateString } from "../utils";
 export async function createDailyChallenge(date: string, title: string) {
-	const encodedTitle = encodeToBase64(title);
-	if (!encodedTitle) throw new Error("Failed to encode title");
-	const result = await db
-		.insert(ChallengeRecord)
-		.values({
-			title: title,
-			encodedTitle: encodedTitle,
-		})
-		.returning({ insertedId: ChallengeRecord.id });
-	const [{ insertedId }] = result;
-	await db
-		.insert(DailyChallengeRecord)
-		.values({
-			date: new Date(date),
-			id: insertedId,
-		})
-		.returning({
-			insertedId: DailyChallengeRecord.id,
-		});
-	return insertedId;
+	const result = await getOrCreateChallenge(title);
+	if (!result) throw new Error("Failed to create challenge");
+	const { id } = result;
+	await db.insert(DailyChallengeRecord).values({
+		date: new Date(date),
+		id,
+	});
+	return id;
 }
 export async function readDailyChallenges(): Promise<DailyChallenge[]> {
 	const records = await db
@@ -103,7 +91,10 @@ export async function getChallenge(title: string): Promise<Challenge | null> {
 		.from(ChallengeRecord)
 		.where(eq(ChallengeRecord.title, title))
 		.leftJoin(HintsRecord, eq(ChallengeRecord.id, HintsRecord.id))
-		.catch(() => [null]);
+		.catch((err) => {
+			console.error(err);
+			return [null];
+		});
 	if (!result) return null;
 	return {
 		title: result.ChallengeRecord.title,
