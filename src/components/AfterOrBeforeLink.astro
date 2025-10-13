@@ -1,0 +1,36 @@
+---
+import { IoCaretBackCircle, IoCaretForwardCircle } from "solid-icons/io";
+import { getChallengeById } from "../lib/server/challenge";
+
+interface Props {
+	id: number;
+}
+const { id } = Astro.props;
+const afterChallenge = await getChallengeById(id + 1);
+const beforeChallenge = await getChallengeById(id - 1);
+---
+
+<div class="flex mt-4 items-center gap-8 justify-center flex-wrap">
+	{
+		beforeChallenge && (
+			<a
+				href={`/game/id/${beforeChallenge.id}`}
+				class="flex items-center gap-2 text-blue-500 hover:underline"
+			>
+				<IoCaretBackCircle />
+				<span>#{beforeChallenge.id.toString().padStart(4, "0")}</span>
+			</a>
+		)
+	}
+	{
+		afterChallenge && (
+			<a
+				href={`/game/id/${afterChallenge.id}`}
+				class="flex items-center gap-2 text-blue-500 hover:underline"
+			>
+				<IoCaretForwardCircle />
+				<span>#{afterChallenge.id.toString().padStart(4, "0")}</span>
+			</a>
+		)
+	}
+</div>

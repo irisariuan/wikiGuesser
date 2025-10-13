@@ -10,8 +10,11 @@ import {
 	ChallengeRecord,
 	DailyChallengeRecord,
 	db,
+	desc,
 	eq,
+	gt,
 	HintsRecord,
+	lt,
 } from "astro:db";
 import { encodeToBase64, getDateString } from "../utils";
 export async function createDailyChallenge(date: string, title: string) {
@@ -59,6 +62,41 @@ export async function getDailyChallenge(
 		.leftJoin(HintsRecord, eq(ChallengeRecord.id, HintsRecord.id))
 		.orderBy(asc(DailyChallengeRecord.id))
 		.where(eq(DailyChallengeRecord.date, new Date(date)))
+		.catch(() => []);
+	if (!result) return null;
+	return {
+		date: getDateString(result.DailyChallengeRecord.date),
+		title: result.ChallengeRecord.title,
+		encodedTitle: result.ChallengeRecord.encodedTitle,
+		hints: result.HintsRecord?.hint.split("\n") ?? [],
+		id: result.ChallengeRecord.id,
+		starred: result.ChallengeRecord.starred,
+	};
+}
+
+export async function getDailyChallengeAfterOrBefore(
+	date: string,
+	afterOrBefore: "after" | "before",
+): Promise<DailyChallenge | null> {
+	const [result] = await db
+		.selectDistinct()
+		.from(DailyChallengeRecord)
+		.where(
+			afterOrBefore === "after"
+				? gt(DailyChallengeRecord.date, new Date(date))
+				: lt(DailyChallengeRecord.date, new Date(date)),
+		)
+		.orderBy(
+			afterOrBefore === "after"
+				? asc(DailyChallengeRecord.date)
+				: desc(DailyChallengeRecord.date),
+		)
+		.limit(1)
+		.innerJoin(
+			ChallengeRecord,
+			eq(DailyChallengeRecord.id, ChallengeRecord.id),
+		)
+		.leftJoin(HintsRecord, eq(ChallengeRecord.id, HintsRecord.id))
 		.catch(() => []);
 	if (!result) return null;
 	return {

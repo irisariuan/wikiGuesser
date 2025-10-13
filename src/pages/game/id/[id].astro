@@ -1,13 +1,14 @@
 ---
 export const prerender = false;
+import { IoCaretBackCircle } from "solid-icons/io";
+import AfterOrBeforeLink from "../../../components/AfterOrBeforeLink.astro";
 import Game from "../../../components/Game";
 import GameFooter from "../../../components/GameFooter.astro";
-import MainLayout from "../../../layout/MainLayout.astro";
 import TitleBar from "../../../components/TitleBar.astro";
+import MainLayout from "../../../layout/MainLayout.astro";
+import type { Challenge } from "../../../lib/clientChallenge";
 import { getChallengeById } from "../../../lib/server/challenge";
 import { extractDataFromWiki } from "../../../lib/web";
-import type { Challenge } from "../../../lib/clientChallenge";
-
 const { id } = Astro.params;
 if (!id) return Astro.redirect("/");
 const parsedId = Number(id);
@@ -24,5 +25,13 @@ if (!text) return Astro.redirect("/internalError");
 		<TitleBar id={parsedId} starred={starred} title={title} />
 		{text && <Game client:load text={text} encodedTitle={encodedTitle} />}
 		<GameFooter title={title} extract={text.extract} hints={hints} />
+		<a
+			href="/"
+			class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+		>
+			<IoCaretBackCircle />
+			<span>Go back to the main page</span>
+		</a>
+		<AfterOrBeforeLink id={parsedId} server:defer />
 	</div>
 </MainLayout>

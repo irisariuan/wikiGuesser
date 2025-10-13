@@ -1,0 +1,36 @@
+---
+import { IoCaretBackCircle, IoCaretForwardCircle } from "solid-icons/io";
+import { getDailyChallengeAfterOrBefore } from "../lib/server/challenge";
+
+interface Props {
+	date: string;
+}
+const { date } = Astro.props;
+const afterChallenge = await getDailyChallengeAfterOrBefore(date, "after");
+const beforeChallenge = await getDailyChallengeAfterOrBefore(date, "before");
+---
+
+<div class="flex mt-4 items-center gap-8 justify-center flex-wrap">
+	{
+		beforeChallenge && (
+			<a
+				href={`/game/daily/${beforeChallenge.date}`}
+				class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+			>
+				<IoCaretBackCircle />
+				<span>{beforeChallenge.date}</span>
+			</a>
+		)
+	}
+	{
+		afterChallenge && (
+			<a
+				href={`/game/daily/${afterChallenge.date}`}
+				class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+			>
+				<IoCaretForwardCircle />
+				<span>{afterChallenge.date}</span>
+			</a>
+		)
+	}
+</div>
