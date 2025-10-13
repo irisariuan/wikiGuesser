@@ -90,12 +90,12 @@ export default function TitleRedirect(props: { url: URL }) {
 			</button>
 			<Switch>
 				<Match when={status() === "error"}>
-					<div class="absolute top-5 bg-rose-500 rounded-xl py-2 px-4 border border-rose-700 left-1/2 -translate-x-1/2">
+					<div class="fixed top-5 bg-rose-500 rounded-xl py-2 px-4 border border-rose-700 left-1/2 -translate-x-1/2">
 						<p class="text-white italic">Server Error</p>
 					</div>
 				</Match>
 				<Match when={status() === "invalid"}>
-					<div class="absolute top-5 bg-rose-500 rounded-xl py-2 px-4 border border-rose-700 left-1/2 -translate-x-1/2">
+					<div class="fixed top-5 bg-rose-500 rounded-xl py-2 px-4 border border-rose-700 left-1/2 -translate-x-1/2">
 						<p class="text-white italic">Invalid Title</p>
 					</div>
 				</Match>
