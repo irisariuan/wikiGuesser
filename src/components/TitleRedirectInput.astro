@@ -1,6 +1,5 @@
 ---
-export const prerender = false;
-import TitleRedirect from "./TitleRedirect.tsx";
+import TitleRedirectInputWrapper from "./TitleRedirectInputWrapper.astro";
 ---
 
 <div class="flex justify-center bg-zinc-300 rounded p-2 flex-col gap-2 m-2">
@@ -11,5 +10,12 @@ import TitleRedirect from "./TitleRedirect.tsx";
 			directly
 		</p>
 	</div>
-	<TitleRedirect client:load url={Astro.url} />
+	<TitleRedirectInputWrapper server:defer>
+		<p
+			slot="fallback"
+			class="m-2 bg-rose-800 py-2 px-6 rounded-full text-rose-700 transition-colors text-center"
+		>
+			Loading...
+		</p>
+	</TitleRedirectInputWrapper>
 </div>
