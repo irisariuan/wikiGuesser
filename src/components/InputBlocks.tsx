@@ -33,6 +33,7 @@ export default function InputBlocks(props: {
 			 text-zinc-800 font-bold border-zinc-600 placeholder:text-zinc-600 placeholder:italic placeholder:font-normal"
 				maxLength={1}
 				placeholder="?"
+				autofocus
 				ref={inputEl}
 				on:input={(event) => {
 					setLetter(
