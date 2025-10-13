@@ -51,6 +51,7 @@ export default function InputBlocks(props: {
 					) {
 						event.preventDefault();
 						if (!isDisabled()) submit();
+						inputEl.value = "";
 					}
 				}}
 			/>
