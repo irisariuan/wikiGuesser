@@ -21,9 +21,7 @@ export default function DailyChallengesSelector(props: { url: URL }) {
 	const [filterStar, setFilterStar] = createSignal(false);
 
 	const timer = setInterval(() => {
-		if (openPopup()) {
-			refetch();
-		}
+		refetch();
 	}, 10000); // Refresh every 10 seconds
 	onCleanup(() => clearInterval(timer));
 
