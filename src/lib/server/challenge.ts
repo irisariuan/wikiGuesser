@@ -119,7 +119,15 @@ export async function createOrGetDailyChallenge(
 	const titleContent = await getRandomWiki(1);
 	if (!titleContent) return null;
 	const title = titleContent.title;
-	const id = await createDailyChallenge(date, title);
+	const id = await createDailyChallenge(date, title).catch((err) => {
+		console.error("An error occurred while creating daily challenge:", err);
+		return null;
+	});
+	if (!id) {
+		const existing = await getDailyChallenge(date);
+		if (existing) return { ...existing, created: false };
+		return null;
+	}
 	const newChallenge = { date, title, id, created: true, starred: false };
 	return newChallenge;
 }
