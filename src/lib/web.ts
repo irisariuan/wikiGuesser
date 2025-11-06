@@ -136,9 +136,15 @@ export async function getRandomWiki(
 > {
 	if (maxTry <= 0)
 		throw new Error("maxTry must be a positive integer greater than 0");
+
+	const newResult: WikiQueryResponseRandomContentWithViews[] = [];
+	let tried = 0;
+	// fetch in batches of 500
 	for (let i = 0; i < maxTry; i += 500) {
-		const result = await fetchRandomWiki(Math.min(maxTry, 500), namespaces);
-		const newResult: WikiQueryResponseRandomContentWithViews[] = [];
+		const result = await fetchRandomWiki(
+			Math.min(maxTry - i, 500),
+			namespaces,
+		);
 		if (!result) {
 			return {
 				success: false,
@@ -146,7 +152,6 @@ export async function getRandomWiki(
 				data: null,
 			};
 		}
-		let tried = 0;
 		for (const page of result) {
 			tried++;
 			const views = await getViewsOfWiki(page.title);
