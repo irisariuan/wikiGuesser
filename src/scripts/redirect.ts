@@ -57,10 +57,14 @@ window.onload = async () => {
 	const url = new URL(window.location.href);
 	const minViewsParam = url.searchParams.get("minViews");
 	const minViews = minViewsParam ? Number(minViewsParam) : null;
-	const valid = minViews && !isNaN(minViews) && minViews >= 0;
+	const minViewsValid = minViews && !isNaN(minViews) && minViews >= 0;
+	const maxTryParam = url.searchParams.get("maxTry");
+	const maxTry = maxTryParam ? Number(maxTryParam) : null;
+	const maxTryValid = maxTry && !isNaN(maxTry) && maxTry >= 1;
 
 	const gameTitle = await actions.getEncodedGameTitle({
-		minViews: valid ? minViews : undefined,
+		minViews: minViewsValid ? minViews : undefined,
+		maxTry: maxTryValid ? maxTry : undefined,
 	});
 	loadingDiv.style.display = "none";
 	clearInterval(randomInterval);
