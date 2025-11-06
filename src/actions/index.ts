@@ -27,7 +27,7 @@ export const server = {
 					result.data.views,
 				);
 			}
-			console.log("Min views:", input.minViews ?? "undefined");
+			console.log("Min views:", input.minViews);
 			const finalTitle = encodeToBase64(title);
 			if (!finalTitle) return null;
 			await getOrCreateChallenge(title);
