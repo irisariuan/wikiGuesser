@@ -1,26 +1,6 @@
 import { actions } from "astro:actions";
-const textItems = [
-	"Starting new game...",
-	"Fetching a random Wikipedia article...",
-	"Almost there!",
-	"Preparing your game...",
-	"Loading fun...",
-	"Getting things ready...",
-	"Hang tight, loading...",
-	"Just a moment more...",
-	"Setting up your adventure...",
-	"Loading excitement...",
-	"Getting your game ready...",
-	"Preparing a challenge for you...",
-	"Loading knowledge...",
-	"Fetching trivia...",
-	"Almost ready to play...",
-	"Loading the fun...",
-	"Getting everything set...",
-	"Preparing your challenge...",
-	"Loading up the game...",
-	"Just a sec, loading...",
-];
+import { text } from "./text";
+
 window.onload = async () => {
 	const successDiv: HTMLDivElement | null = document.querySelector(
 		"div#astro-actions-success",
@@ -54,7 +34,7 @@ window.onload = async () => {
 	retryButton.addEventListener("click", reload);
 
 	const randomInterval = setInterval(() => {
-		loadingP.textContent = pickRandom(textItems);
+		loadingP.textContent = pickRandom(text);
 	}, 5000);
 
 	const url = new URL(window.location.href);
