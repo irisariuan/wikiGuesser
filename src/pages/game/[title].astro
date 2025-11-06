@@ -25,7 +25,7 @@ const { id, starred, title } = challenge;
 	<div class="flex flex-col items-center gap-4">
 		<TitleBar id={id} starred={starred} title={title} />
 		{text && <Game client:load text={text} encodedTitle={rawTitle} />}
-		<GameFooter title={text.title} extract={text.extract} />
+		<GameFooter title={text.title} extract={text.extract} rawTitle={finalTitle} />
 		<RedirectButtons />
 		<AfterOrBeforeLink id={id} server:defer />
 	</div>

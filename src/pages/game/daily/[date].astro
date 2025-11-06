@@ -37,7 +37,7 @@ const { title, extract } = content;
 			title={rawTitle}
 		/>
 		<Game client:load text={content} encodedTitle={encodedTitle} />
-		<GameFooter title={title} extract={extract} />
+		<GameFooter title={title} extract={extract} rawTitle={rawTitle} />
 		<RedirectButtons />
 		<DailyAfterOrBeforeLink date={finalDate} server:defer />
 	</div>

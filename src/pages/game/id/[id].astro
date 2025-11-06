@@ -24,7 +24,12 @@ if (!text) return Astro.redirect("/internalError");
 	<div class="flex flex-col items-center gap-4">
 		<TitleBar id={parsedId} starred={starred} title={title} />
 		{text && <Game client:load text={text} encodedTitle={encodedTitle} />}
-		<GameFooter title={title} extract={text.extract} hints={hints} />
+		<GameFooter
+			title={title}
+			extract={text.extract}
+			hints={hints}
+			rawTitle={title}
+		/>
 		<RedirectButtons />
 		<AfterOrBeforeLink id={parsedId} server:defer />
 	</div>
