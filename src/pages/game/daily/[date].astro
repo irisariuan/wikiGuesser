@@ -1,21 +1,18 @@
 ---
 export const prerender = false;
 
-import { IoCaretBackCircle } from "solid-icons/io";
+import DailyAfterOrBeforeLink from "../../../components/DailyAfterOrBeforeLink.astro";
 import Game from "../../../components/Game";
 import GameFooter from "../../../components/GameFooter.astro";
+import RedirectButtons from "../../../components/RedirectButtons.astro";
 import TitleBar from "../../../components/TitleBar.astro";
 import MainLayout from "../../../layout/MainLayout.astro";
-import {
-	createOrGetDailyChallenge,
-} from "../../../lib/server/challenge";
+import { createOrGetDailyChallenge } from "../../../lib/server/challenge";
 import { encodeToBase64, getDateString } from "../../../lib/utils";
 import { extractDataFromWiki } from "../../../lib/web";
-import DailyAfterOrBeforeLink from "../../../components/DailyAfterOrBeforeLink.astro";
 
 const { date } = Astro.params;
-if (date && !/\d{4}-\d{2}-\d{2}/.test(date))
-	return Astro.redirect("/notFound");
+if (date && !/\d{4}-\d{2}-\d{2}/.test(date)) return Astro.redirect("/notFound");
 const finalDate = date ?? getDateString();
 const challenge = await createOrGetDailyChallenge(
 	finalDate,
@@ -41,13 +38,7 @@ const { title, extract } = content;
 		/>
 		<Game client:load text={content} encodedTitle={encodedTitle} />
 		<GameFooter title={title} extract={extract} />
-		<a
-			href="/"
-			class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
-		>
-			<IoCaretBackCircle />
-			<span>Go back to the main page</span>
-		</a>
+		<RedirectButtons />
 		<DailyAfterOrBeforeLink date={finalDate} server:defer />
 	</div>
 </MainLayout>

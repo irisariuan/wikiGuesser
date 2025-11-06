@@ -1,18 +1,27 @@
 import { JSDOM } from "jsdom";
 import { Converter } from "opencc-js";
 import { isEnglish } from "./text";
+import type { Tried } from "./utils";
 
-interface ExtractedWikiResponse<Success extends boolean> {
-	batchcomplete: Success;
-	query: Success extends true
-		? { pages: ExtractedWikiResponseQueryPage[] }
-		: undefined;
-}
-
-export interface ExtractedWikiResponseQueryPage {
+interface BasePage {
 	pageid: number;
 	ns: number;
 	title: string;
+}
+
+interface ExtractedWikiResponse<
+	ExtraResponse,
+	Success extends boolean = boolean,
+> {
+	batchcomplete: Success;
+	query: Success extends true
+		? {
+				pages: ExtraResponse[];
+			}
+		: undefined;
+}
+
+export interface ExtractedWikiResponseQueryPage extends BasePage {
 	extract: string;
 }
 
@@ -20,6 +29,9 @@ export interface ExtractedWikiResponseQueryPageReturn
 	extends ExtractedWikiResponseQueryPage {
 	originalExtract: string;
 	originalTitle: string;
+}
+export interface ExtractWikiResponseViewsPage extends BasePage {
+	pageviews: Record<string, number>;
 }
 
 export function removeHtml(html: string, removeEnglish = false) {
@@ -70,7 +82,10 @@ export async function extractDataFromWiki(
 	if (!response || !response.ok) return null;
 	const data = (await response
 		.json()
-		.catch(() => null)) as ExtractedWikiResponse<boolean> | null;
+		.catch(() => null)) as ExtractedWikiResponse<
+		ExtractedWikiResponseQueryPage,
+		boolean
+	> | null;
 	if (!data || !data.batchcomplete || !data.query?.pages?.[0]) return null;
 	const mayContainHtml = data.query.pages[0];
 	if (mayContainHtml.extract.trim().length === 0) return null;
@@ -96,6 +111,10 @@ interface WikiQueryResponseRandomContent {
 	ns: number;
 	title: string;
 }
+interface WikiQueryResponseRandomContentWithViews
+	extends WikiQueryResponseRandomContent {
+	views: number;
+}
 
 export const validNamespaces = [
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 90, 91, 92, 93, 100,
@@ -105,19 +124,48 @@ export const validNamespaces = [
 export type Namespace = (typeof validNamespaces)[number];
 
 export async function getRandomWiki(
-	limit: number,
-	namespaces?: Namespace[],
-): Promise<WikiQueryResponseRandomContent[] | null>;
-export async function getRandomWiki(
-	limit: 1,
-	namespaces?: Namespace[],
-): Promise<WikiQueryResponseRandomContent | null>;
-export async function getRandomWiki(
-	limit: number,
+	minViews = 1000,
+	maxTry = 50,
 	namespaces: Namespace[] = [0],
 ): Promise<
-	WikiQueryResponseRandomContent | WikiQueryResponseRandomContent[] | null
+	Tried<
+		WikiQueryResponseRandomContentWithViews,
+		any,
+		WikiQueryResponseRandomContentWithViews[]
+	>
 > {
+	if (maxTry <= 0 || maxTry > 500)
+		throw new Error("maxTry must be between 1 and 500");
+	const result = await fetchRandomWiki(maxTry, namespaces);
+	const newResult: WikiQueryResponseRandomContentWithViews[] = [];
+	if (!result) {
+		return {
+			success: false,
+			error: "Failed to fetch random wiki",
+			data: null,
+		};
+	}
+	for (const page of result) {
+		const views = await getViewsOfWiki(page.title);
+		if (views >= minViews)
+			return {
+				success: true,
+				data: { ...page, views },
+				error: null,
+			};
+		newResult.push({ ...page, views });
+	}
+	return {
+		success: false,
+		error: "No match",
+		data: newResult,
+	};
+}
+
+export async function fetchRandomWiki(
+	limit: number,
+	namespaces: Namespace[] = [0],
+): Promise<WikiQueryResponseRandomContent[] | null> {
 	const url = new URL(
 		"https://zh.wikipedia.org/w/api.php?action=query&list=random&format=json",
 	);
@@ -129,7 +177,6 @@ export async function getRandomWiki(
 		.json()
 		.catch(() => null)) as WikiQueryResponseRandom | null;
 	if (!data) return null;
-	if (limit === 1) return data.query.random[0];
 	return data.query.random;
 }
 
@@ -145,4 +192,22 @@ export async function extractContentLengthFromWiki(title: string) {
 	} | null;
 	if (!data?.query?.pages?.[0]?.length) return null;
 	return data.query.pages[0].length;
+}
+export async function getViewsOfWiki(title: string): Promise<number> {
+	const url = new URL("https://zh.wikipedia.org/w/api.php");
+	url.searchParams.set("action", "query");
+	url.searchParams.set("variant", "zh-hk");
+	url.searchParams.set("titles", title);
+	url.searchParams.set("prop", "pageviews");
+	url.searchParams.set("format", "json");
+	url.searchParams.set("formatversion", "2");
+	url.searchParams.set("redirects", "1");
+	const res = await fetch(url).catch(() => null);
+	if (!res || !res.ok) return -1;
+	const data: ExtractedWikiResponse<ExtractWikiResponseViewsPage> = await res
+		.json()
+		.catch(() => null);
+	if (!data.query?.pages[0]) return -1;
+	const page = data.query.pages[0];
+	return Object.values(page.pageviews).reduce((a, b) => a + b, 0);
 }

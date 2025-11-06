@@ -6,10 +6,20 @@ interface Props {
 }
 import BlockDescriptions from "./BlockDescriptions.astro";
 import Hints from "./Hints.astro";
+import Views from "./Views.astro";
 const { title, extract, hints } = Astro.props;
 ---
 
 <div>
 	<Hints title={title} text={extract} hints={hints} />
 	<BlockDescriptions />
+	<div class="mt-4">
+		<Views title={title} server:defer>
+			<div
+				class="bg-zinc-300 h-6 w-full rounded animate-pulse"
+				slot="fallback"
+			>
+			</div>
+		</Views>
+	</div>
 </div>

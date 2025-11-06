@@ -1,13 +1,12 @@
 ---
 interface Props {
-  error: unknown;
+	error: unknown;
 }
 
-import { IoCaretBackCircle } from "solid-icons/io";
-import MainLayout from "../layout/MainLayout.astro";
-import webIcon from "../assets/webIcon.png";
 import { Picture } from "astro:assets";
-
+import webIcon from "../assets/webIcon.png";
+import RedirectButtons from "../components/RedirectButtons.astro";
+import MainLayout from "../layout/MainLayout.astro";
 const { error } = Astro.props;
 ---
 
@@ -23,13 +22,9 @@ const { error } = Astro.props;
 		<p class="italic">
 			Sorry, internal server error occurred. Please try again later.
 		</p>
-		<p class="text-rose-200 bg-rose-500 p-2 rounded-xl">{error instanceof Error ? error.message : "Unknown error"}</p>
-		<a
-			href="/"
-			class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
-		>
-			<IoCaretBackCircle />
-			<span>Go back to the main page</span>
-		</a>
+		<p class="text-rose-200 bg-rose-500 p-2 rounded-xl">
+			{error instanceof Error ? error.message : "Unknown error"}
+		</p>
+		<RedirectButtons />
 	</div>
 </MainLayout>

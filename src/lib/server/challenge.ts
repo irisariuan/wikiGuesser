@@ -116,9 +116,12 @@ export async function createOrGetDailyChallenge(
 	const existing = await getDailyChallenge(date);
 	if (existing) return { ...existing, created: false };
 	if (!allowCreate) return null;
-	const titleContent = await getRandomWiki(1);
-	if (!titleContent) return null;
-	const title = titleContent.title;
+	const fetchedResult = await getRandomWiki();
+	if (!fetchedResult.data) return null;
+	const title = fetchedResult.success
+		? fetchedResult.data.title
+		: fetchedResult.data[0].title;
+	if (!title) return null;
 	const id = await createDailyChallenge(date, title).catch((err) => {
 		console.error("An error occurred while creating daily challenge:", err);
 		return null;

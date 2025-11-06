@@ -15,7 +15,7 @@ export default function HintBlock(props: { hint?: string }) {
 					</div>
 				</Show>
 				<Show when={!props.hint}>
-					<div class="w-full h-full bg-zinc-400 rounded animate-pulse"></div>
+					<div class="w-full h-full bg-zinc-400 rounded animate-pulse" />
 				</Show>
 			</div>
 		</div>

@@ -1,8 +1,8 @@
 ---
-import { IoCaretBackCircle } from "solid-icons/io";
-import MainLayout from "../layout/MainLayout.astro";
-import webIcon from "../assets/webIcon.png";
 import { Picture } from "astro:assets";
+import RedirectButtons from "../components/RedirectButtons.astro";
+import webIcon from "../assets/webIcon.png";
+import MainLayout from "../layout/MainLayout.astro";
 ---
 
 <MainLayout subtitle="Not Found">
@@ -17,12 +17,6 @@ import { Picture } from "astro:assets";
 		<p class="italic">
 			Sorry, the page you are seeking for is not available
 		</p>
-		<a
-			href="/"
-			class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
-		>
-			<IoCaretBackCircle />
-			<span>Go back to the main page</span>
-		</a>
+		<RedirectButtons />
 	</div>
-</MainLayout>
+</MainLayout>;

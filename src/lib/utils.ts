@@ -33,3 +33,6 @@ export function truncateText(
 	if (text.length <= maxLength + wordToAdd.length) return text;
 	return text.slice(0, maxLength + wordToAdd.length) + wordToAdd;
 }
+export type Tried<T, E = any, ET = T> =
+	| { success: true; error: null; data: T }
+	| { success: false; error: E; data: ET | null };

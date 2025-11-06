@@ -10,12 +10,12 @@ const afterChallenge = await getDailyChallengeAfterOrBefore(date, "after");
 const beforeChallenge = await getDailyChallengeAfterOrBefore(date, "before");
 ---
 
-<div class="flex mt-4 items-center gap-8 justify-center flex-wrap">
+<div class="flex items-center gap-8 justify-center flex-wrap">
 	{
 		beforeChallenge && (
 			<a
 				href={`/game/daily/${beforeChallenge.date}`}
-				class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+				class="flex items-center gap-2 text-blue-500 hover:underline"
 			>
 				<IoCaretBackCircle />
 				<span>{beforeChallenge.date}</span>
@@ -26,7 +26,7 @@ const beforeChallenge = await getDailyChallengeAfterOrBefore(date, "before");
 		afterChallenge && (
 			<a
 				href={`/game/daily/${afterChallenge.date}`}
-				class="mt-4 flex items-center gap-2 text-blue-500 hover:underline"
+				class="flex items-center gap-2 text-blue-500 hover:underline"
 			>
 				<IoCaretForwardCircle />
 				<span>{afterChallenge.date}</span>
