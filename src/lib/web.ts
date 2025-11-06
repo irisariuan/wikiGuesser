@@ -157,22 +157,23 @@ export async function getRandomWiki(
 			const views = await getViewsOfWiki(titles);
 			if (!views) continue;
 			for (let k = 0; k < batch.length; k++) {
-				const viewCount = views[k];
-				if (viewCount) {
-					if (viewCount >= minViews)
-						return {
-							success: true,
-							data: {
-								...batch[k],
-								views: viewCount,
-								tried: i + j + k + 1,
-							},
-							error: null,
-						};
+				const view = views[k];
+				const match = batch.find((b) => b.title === view.title);
+				if (!match) continue;
+				if (view.views && view.views >= minViews) {
+					return {
+						success: true,
+						data: {
+							...match,
+							views: view.views,
+							tried: i + j + k + 1,
+						},
+						error: null,
+					};
 				}
 				newResult.push({
-					...batch[k],
-					views: viewCount,
+					...match,
+					views: view.views,
 				});
 			}
 		}
@@ -216,9 +217,20 @@ export async function extractContentLengthFromWiki(title: string) {
 	return data.query.pages[0].length;
 }
 
+interface View {
+	views: number | null;
+	title: string;
+}
+
+export async function getViewsOfWiki(title: string): Promise<View | null>;
+export async function getViewsOfWiki(titles: string[]): Promise<View[] | null>;
 export async function getViewsOfWiki(
-	titles: string[],
-): Promise<(number | null)[] | null> {
+	titles: string[] | string,
+): Promise<View[] | null | View> {
+	if (typeof titles === "string") {
+		const result = await getViewsOfWiki([titles]);
+		return result ? result[0] : null;
+	}
 	const url = new URL("https://zh.wikipedia.org/w/api.php");
 	url.searchParams.set("action", "query");
 	url.searchParams.set("variant", "zh-hk");
@@ -233,12 +245,13 @@ export async function getViewsOfWiki(
 		.json()
 		.catch(() => null);
 	if (!data.query?.pages) return null;
-	return data.query.pages.map((page) =>
-		page.pageviews
+	return data.query.pages.map((page) => ({
+		views: page.pageviews
 			? Object.values(page.pageviews).reduce(
 					(a, b): number => (a ?? 0) + (b ?? 0),
 					0,
 				)
 			: null,
-	);
+		title: page.title,
+	}));
 }

@@ -1,17 +1,16 @@
 ---
 export const prerender = false;
-import { undefined } from "astro:schema";
 import { getViewsOfWiki } from "../lib/web";
 
 interface Props {
 	title: string;
 }
 const { title } = Astro.props;
-const [views] = (await getViewsOfWiki([title])) ?? [];
+const views = await getViewsOfWiki(title);
 ---
 
 {
-	views !== null && views >= 0 && (
+	views !== null && views.views !== null && views?.views >= 0 && (
 		<p class="text-zinc-500">
 			This page has been viewed {views} times in recent 60 days
 		</p>
