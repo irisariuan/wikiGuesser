@@ -152,16 +152,30 @@ export async function getRandomWiki(
 				data: null,
 			};
 		}
-		for (const page of result) {
-			tried++;
-			const views = await getViewsOfWiki(page.title);
-			if (views >= minViews)
-				return {
-					success: true,
-					data: { ...page, views, tried },
-					error: null,
-				};
-			newResult.push({ ...page, views });
+		for (let j = 0; j < result.length; j += 50) {
+			const batch = result.slice(j, j + 50);
+			const titles = batch.map((item) => item.title);
+			const views = await getViewsOfWiki(titles);
+			if (!views) continue;
+			for (let k = 0; k < batch.length; k++) {
+				tried++;
+				const viewCount = views[k];
+				if (viewCount >= minViews) {
+					return {
+						success: true,
+						data: {
+							...batch[k],
+							views: viewCount,
+							tried,
+						},
+						error: null,
+					};
+				}
+				newResult.push({
+					...batch[k],
+					views: viewCount,
+				});
+			}
 		}
 	}
 	return {
@@ -202,21 +216,41 @@ export async function extractContentLengthFromWiki(title: string) {
 	if (!data?.query?.pages?.[0]?.length) return null;
 	return data.query.pages[0].length;
 }
-export async function getViewsOfWiki(title: string): Promise<number> {
+export async function getViewsOfWiki(title: string): Promise<number | null>;
+export async function getViewsOfWiki(
+	titles: string[],
+): Promise<number[] | null>;
+export async function getViewsOfWiki(
+	titles: string[] | string,
+): Promise<number[] | null | number> {
+	if (typeof titles !== "string" && titles.length > 50)
+		throw new Error("Cannot get pageviews for more than 50 titles at once");
+
 	const url = new URL("https://zh.wikipedia.org/w/api.php");
 	url.searchParams.set("action", "query");
 	url.searchParams.set("variant", "zh-hk");
-	url.searchParams.set("titles", title);
+	url.searchParams.set(
+		"titles",
+		typeof titles === "string" ? titles : titles.join("|"),
+	);
 	url.searchParams.set("prop", "pageviews");
 	url.searchParams.set("format", "json");
 	url.searchParams.set("formatversion", "2");
 	url.searchParams.set("redirects", "1");
 	const res = await fetch(url).catch(() => null);
-	if (!res || !res.ok) return -1;
+	if (!res || !res.ok) return null;
 	const data: ExtractedWikiResponse<ExtractWikiResponseViewsPage> = await res
 		.json()
 		.catch(() => null);
-	if (!data.query?.pages[0]) return -1;
-	const page = data.query.pages[0];
-	return Object.values(page.pageviews).reduce((a, b) => a + b, 0);
+	if (typeof titles === "string") {
+		if (!data.query?.pages?.[0]) return null;
+		return Object.values(data.query.pages[0].pageviews).reduce(
+			(a, b) => a + b,
+			0,
+		);
+	}
+	if (!data.query?.pages) return null;
+	return data.query.pages.map((page) =>
+		Object.values(page.pageviews).reduce((a, b) => a + b, 0),
+	);
 }
