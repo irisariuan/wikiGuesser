@@ -7,8 +7,8 @@ import { getOrCreateChallenge } from "../lib/server/challenge";
 export const server = {
 	getEncodedGameTitle: defineAction({
 		input: z.object({
-			minViews: z.number().int().min(0).optional(),
-			maxTry: z.number().int().min(1).optional(),
+			minViews: z.number().int().min(0).default(1000),
+			maxTry: z.number().int().min(1).default(1000),
 		}),
 		handler: async (input) => {
 			const result = await getRandomWiki(input.minViews, input.maxTry);

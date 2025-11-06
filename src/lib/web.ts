@@ -124,8 +124,8 @@ export const validNamespaces = [
 export type Namespace = (typeof validNamespaces)[number];
 
 export async function getRandomWiki(
-	minViews = 1000,
-	maxTry = 50,
+	minViews: number,
+	maxTry: number,
 	namespaces: Namespace[] = [0],
 ): Promise<
 	Tried<

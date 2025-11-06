@@ -116,7 +116,7 @@ export async function createOrGetDailyChallenge(
 	const existing = await getDailyChallenge(date);
 	if (existing) return { ...existing, created: false };
 	if (!allowCreate) return null;
-	const fetchedResult = await getRandomWiki();
+	const fetchedResult = await getRandomWiki(1000, 1000);
 	if (!fetchedResult.data) return null;
 	const title = fetchedResult.success
 		? fetchedResult.data.title
