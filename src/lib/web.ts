@@ -129,31 +129,35 @@ export async function getRandomWiki(
 	namespaces: Namespace[] = [0],
 ): Promise<
 	Tried<
-		WikiQueryResponseRandomContentWithViews,
+		WikiQueryResponseRandomContentWithViews & { tried: number },
 		any,
 		WikiQueryResponseRandomContentWithViews[]
 	>
 > {
-	if (maxTry <= 0 || maxTry > 500)
-		throw new Error("maxTry must be between 1 and 500");
-	const result = await fetchRandomWiki(maxTry, namespaces);
-	const newResult: WikiQueryResponseRandomContentWithViews[] = [];
-	if (!result) {
-		return {
-			success: false,
-			error: "Failed to fetch random wiki",
-			data: null,
-		};
-	}
-	for (const page of result) {
-		const views = await getViewsOfWiki(page.title);
-		if (views >= minViews)
+	if (maxTry <= 0)
+		throw new Error("maxTry must be a positive integer greater than 0");
+	for (let i = 0; i < maxTry; i += 500) {
+		const result = await fetchRandomWiki(Math.min(maxTry, 500), namespaces);
+		const newResult: WikiQueryResponseRandomContentWithViews[] = [];
+		if (!result) {
 			return {
-				success: true,
-				data: { ...page, views },
-				error: null,
+				success: false,
+				error: "Failed to fetch random wiki",
+				data: null,
 			};
-		newResult.push({ ...page, views });
+		}
+		let tried = 0;
+		for (const page of result) {
+			tried++;
+			const views = await getViewsOfWiki(page.title);
+			if (views >= minViews)
+				return {
+					success: true,
+					data: { ...page, views, tried },
+					error: null,
+				};
+			newResult.push({ ...page, views });
+		}
 	}
 	return {
 		success: false,

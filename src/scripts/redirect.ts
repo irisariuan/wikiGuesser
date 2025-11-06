@@ -56,10 +56,11 @@ window.onload = async () => {
 
 	const url = new URL(window.location.href);
 	const minViewsParam = url.searchParams.get("minViews");
-	let minViews: number = Number(minViewsParam);
+	const minViews = minViewsParam ? Number(minViewsParam) : null;
+	const valid = minViews && !isNaN(minViews) && minViews >= 0;
 
 	const gameTitle = await actions.getEncodedGameTitle({
-		minViews: isNaN(minViews) ? undefined : minViews,
+		minViews: valid ? minViews : undefined,
 	});
 	loadingDiv.style.display = "none";
 	clearInterval(randomInterval);
