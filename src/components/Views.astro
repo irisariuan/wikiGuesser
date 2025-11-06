@@ -12,7 +12,7 @@ const views = await getViewsOfWiki(title);
 {
 	views !== null && views.views !== null && views?.views >= 0 && (
 		<p class="text-zinc-500">
-			This page has been viewed {views} times in recent 60 days
+			This page has been viewed {views.views} times in recent 60 days
 		</p>
 	)
 }
