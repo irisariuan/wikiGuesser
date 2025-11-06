@@ -38,6 +38,8 @@ window.onload = async () => {
 		document.querySelector("p#redirecting");
 	const loadingP: HTMLParagraphElement | null =
 		document.querySelector("p#loading");
+	const extraInfoP: HTMLParagraphElement | null =
+		document.querySelector("p#extraInfo");
 	if (
 		!a ||
 		!successDiv ||
@@ -45,7 +47,8 @@ window.onload = async () => {
 		!loadingDiv ||
 		!retryButton ||
 		!redirectingP ||
-		!loadingP
+		!loadingP ||
+		!extraInfoP
 	)
 		return;
 	retryButton.addEventListener("click", reload);
@@ -73,7 +76,11 @@ window.onload = async () => {
 		return;
 	}
 	successDiv.style.display = "";
-	a.href = `/game/${gameTitle.data}`;
+	if (gameTitle.data.tried) {
+		extraInfoP.textContent = `Found a suitable article after trying ${gameTitle.data.tried} times.`;
+		extraInfoP.style.display = "";
+	}
+	a.href = `/game/${gameTitle.data.finalTitle}`;
 	let countdown = 3;
 	const interval = setInterval(() => {
 		countdown--;

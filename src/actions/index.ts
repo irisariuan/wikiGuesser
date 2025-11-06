@@ -18,15 +18,23 @@ export const server = {
 				: result.data[0].title;
 			if (!title) return null;
 			if (!result.success) {
-				console.log(result.error)
+				console.log(result.error);
 			} else {
-				console.log('Tried', result.data.tried, 'times to get a suitable article, views:', result.data.views)
+				console.log(
+					"Tried",
+					result.data.tried,
+					"times to get a suitable article, views:",
+					result.data.views,
+				);
 			}
-			console.log('Min views:', input.minViews ?? 'undefined')
+			console.log("Min views:", input.minViews ?? "undefined");
 			const finalTitle = encodeToBase64(title);
 			if (!finalTitle) return null;
 			await getOrCreateChallenge(title);
-			return finalTitle;
+			return {
+				finalTitle,
+				tried: result.success ? result.data.tried : null,
+			};
 		},
 	}),
 };

@@ -31,7 +31,7 @@ export interface ExtractedWikiResponseQueryPageReturn
 	originalTitle: string;
 }
 export interface ExtractWikiResponseViewsPage extends BasePage {
-	pageviews: Record<string, number>;
+	pageviews?: Record<string, number | null>;
 }
 
 export function removeHtml(html: string, removeEnglish = false) {
@@ -111,9 +111,9 @@ interface WikiQueryResponseRandomContent {
 	ns: number;
 	title: string;
 }
-interface WikiQueryResponseRandomContentWithViews
+export interface WikiQueryResponseRandomContentWithViews
 	extends WikiQueryResponseRandomContent {
-	views: number;
+	views: number | null;
 }
 
 export const validNamespaces = [
@@ -138,7 +138,6 @@ export async function getRandomWiki(
 		throw new Error("maxTry must be a positive integer greater than 0");
 
 	const newResult: WikiQueryResponseRandomContentWithViews[] = [];
-	let tried = 0;
 	// fetch in batches of 500
 	for (let i = 0; i < maxTry; i += 500) {
 		const result = await fetchRandomWiki(
@@ -158,18 +157,18 @@ export async function getRandomWiki(
 			const views = await getViewsOfWiki(titles);
 			if (!views) continue;
 			for (let k = 0; k < batch.length; k++) {
-				tried++;
 				const viewCount = views[k];
-				if (viewCount >= minViews) {
-					return {
-						success: true,
-						data: {
-							...batch[k],
-							views: viewCount,
-							tried,
-						},
-						error: null,
-					};
+				if (viewCount) {
+					if (viewCount >= minViews)
+						return {
+							success: true,
+							data: {
+								...batch[k],
+								views: viewCount,
+								tried: i + j + k + 1,
+							},
+							error: null,
+						};
 				}
 				newResult.push({
 					...batch[k],
@@ -216,23 +215,14 @@ export async function extractContentLengthFromWiki(title: string) {
 	if (!data?.query?.pages?.[0]?.length) return null;
 	return data.query.pages[0].length;
 }
-export async function getViewsOfWiki(title: string): Promise<number | null>;
+
 export async function getViewsOfWiki(
 	titles: string[],
-): Promise<number[] | null>;
-export async function getViewsOfWiki(
-	titles: string[] | string,
-): Promise<number[] | null | number> {
-	if (typeof titles !== "string" && titles.length > 50)
-		throw new Error("Cannot get pageviews for more than 50 titles at once");
-
+): Promise<(number | null)[] | null> {
 	const url = new URL("https://zh.wikipedia.org/w/api.php");
 	url.searchParams.set("action", "query");
 	url.searchParams.set("variant", "zh-hk");
-	url.searchParams.set(
-		"titles",
-		typeof titles === "string" ? titles : titles.join("|"),
-	);
+	url.searchParams.set("titles", titles.join("|"));
 	url.searchParams.set("prop", "pageviews");
 	url.searchParams.set("format", "json");
 	url.searchParams.set("formatversion", "2");
@@ -242,15 +232,13 @@ export async function getViewsOfWiki(
 	const data: ExtractedWikiResponse<ExtractWikiResponseViewsPage> = await res
 		.json()
 		.catch(() => null);
-	if (typeof titles === "string") {
-		if (!data.query?.pages?.[0]) return null;
-		return Object.values(data.query.pages[0].pageviews).reduce(
-			(a, b) => a + b,
-			0,
-		);
-	}
 	if (!data.query?.pages) return null;
 	return data.query.pages.map((page) =>
-		Object.values(page.pageviews).reduce((a, b) => a + b, 0),
+		page.pageviews
+			? Object.values(page.pageviews).reduce(
+					(a, b): number => (a ?? 0) + (b ?? 0),
+					0,
+				)
+			: null,
 	);
 }
